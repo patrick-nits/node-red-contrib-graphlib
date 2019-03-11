@@ -1,0 +1,433 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+
+<script type="text/javascript">
+    /*
+
+     */
+    var arg_patterns = {
+        all: ['#arg_value', '#arg_v', '#arg_w', '#arg_label', '#weightFn', '#edgeFn', '#filterFn'],
+        isDirected: [],
+        isMultigraph: [],
+        isCompound: [],
+        graph: [],
+        nodeCount: [],
+        edgeCount: [],
+        nodes: [],
+        edges: [],
+        sources: [],
+        setDefaultNodeLabel: ['#arg_value'],
+        setDefaultEdgeLabel: ['#arg_value'],
+        hasNode: ['#arg_v'],
+        node: ['#arg_v'],
+        removeNode: ['#arg_v'],
+        predecessors: ['#arg_v'],
+        successors: ['#arg_v'],
+        neighbors: ['#arg_v'],
+        parent: ['#arg_v'],
+        children: ['#arg_v'],
+        inEdges: ['#arg_v', '#arg_w'],
+        outEdges: ['#arg_v', '#arg_w'],
+        nodeEdges: ['#arg_v', '#arg_w'],
+        hasEdge: ['#arg_v', '#arg_w'],
+        edge: ['#arg_v', '#arg_w'],
+        setParent: ['#arg_v', '#arg_w'],
+        removeEdge: ['#arg_v', '#arg_w'],
+        setNode: ['#arg_v', '#arg_label'],
+        setEdge: ['#arg_v', '#arg_w', '#arg_label'],
+        components: [],
+        findCycles: [],
+        isAcyclic: [],
+        tarjan: [],
+        topsort: [],
+        postorder: ['#arg_v'],
+        preorder: ['#arg_v'],
+        dijkstra: ['#arg_v', '#weightFn', '#edgeFn'],
+        dijkstraAll: ['#weightFn', '#edgeFn'],
+        floydWarshall: ['#weightFn', '#edgeFn'],
+        prim: ['#weightFn'],
+        nodeObj: ['#arg_v'],
+        nodeObjs: ['#arg_v'],
+        selectNodeObjs: ['#filterFn'],
+        filterNodeObjs: ['#filterFn']
+    };
+
+    RED.nodes.registerType("graphlib_func", {
+        category: 'graphlib',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            func: {value: 'nodes', required: true},
+            arg_value: {},
+            arg_value_type: {},
+            arg_v: {},
+            arg_v_type: {},
+            arg_w: {},
+            arg_w_type: {},
+            arg_label: {},
+            arg_label_type: {},
+            weightFn: {
+                value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* e - Current edge to calculate weight for.\n" +
+                    "* g - Graph \n" +
+                    "* msg - msg that triggered the algorithm.\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return Number.\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "return 1;\n"
+            },
+            edgeFn: {
+                value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID to select edges for.\n" +
+                    "* g - Graph \n" +
+                    "* msg - msg that triggered the algorithm.\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return array of edges. Default: g.outEdges(v);\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "return g.outEdges(v);"
+            },
+            filterFn: {
+                value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID to select edges for.\n" +
+                    "* value - the current node to select edges for.\n" +
+                    "* g_old - Inital graph to filter from.\n" +
+                    "* g_new - New graph, where nodes get added based on filter return value.\n" +
+                    "* msg - msg that triggered the algorithm.\\n\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return Boolean.\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n" +
+                    "\n" +
+                    "return true; "
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icon.png",
+        paletteLabel: "Graphlib Function",
+        label: function () {
+            return this.name || this.func || "Graphlib function";
+        },
+        oneditprepare: function () {
+
+            //Hide and show inputs
+            $('#node-input-func').change(function () {
+
+                $(arg_patterns.all.join()).hide();
+                $(arg_patterns[$(this).val()].join()).show();
+
+            });
+
+            this.editorWeightFN = RED.editor.createEditor({
+                id: 'node-input-weightFn-editor',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-weightFn").val(),
+                globals: {
+                    msg: false,
+                    context: false,
+                    RED: false,
+                    util: false,
+                    flow: false,
+                    global: false,
+                    console: false,
+                    Buffer: false,
+                    setTimeout: false,
+                    clearTimeout: false,
+                    setInterval: false,
+                    clearInterval: false
+                }
+            });
+
+            this.editoredgeFN = RED.editor.createEditor({
+                id: 'node-input-edgeFn-editor',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-edgeFn").val(),
+                globals: {
+                    msg: false,
+                    context: false,
+                    RED: false,
+                    util: false,
+                    flow: false,
+                    global: false,
+                    console: false,
+                    Buffer: false,
+                    setTimeout: false,
+                    clearTimeout: false,
+                    setInterval: false,
+                    clearInterval: false
+                }
+            });
+
+            this.editorfilterFn = RED.editor.createEditor({
+                id: 'node-input-filterFn-editor',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-filterFn").val(),
+                globals: {
+                    msg: false,
+                    context: false,
+                    RED: false,
+                    util: false,
+                    flow: false,
+                    global: false,
+                    console: false,
+                    Buffer: false,
+                    setTimeout: false,
+                    clearTimeout: false,
+                    setInterval: false,
+                    clearInterval: false
+                }
+            });
+
+            var typedInput = function ($selector, $typeSelector) {
+                $selector = $($selector);
+
+                $selector.typedInput({
+                    types: ['msg', 'str', 'flow', 'global'],
+                    typeField: $typeSelector
+                });
+            };
+
+            typedInput('#node-input-arg_value', "#node-input-arg_value_type");
+            typedInput('#node-input-arg_v', "#node-input-arg_v_type");
+            typedInput('#node-input-arg_w', "#node-input-arg_w_type");
+            typedInput('#node-input-arg_label', "#node-input-arg_label_type");
+        },
+        oneditsave: function () {
+
+            var weightFnAnnot = this.editorWeightFN.getSession().getAnnotations();
+            this.weightFnnoerr = 0;
+            $("#node-input-noerr").val(0);
+            for (var k = 0; k < weightFnAnnot.length; k++) {
+                //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
+                if (weightFnAnnot[k].type === "error") {
+                    $("#node-input-weightFn-noerr").val(weightFnAnnot.length);
+                    this.weightFnnoerr = weightFnAnnot.length;
+                }
+            }
+            $("#node-input-weightFn").val(this.editorWeightFN.getValue());
+            this.editorWeightFN.destroy();
+            delete this.editorWeightFN;
+
+            var edgeFnAnnot = this.editoredgeFN.getSession().getAnnotations();
+            this.edgeFNnoerr = 0;
+            $("#node-input-noerr").val(0);
+            for (var k = 0; k < weightFnAnnot.length; k++) {
+                //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
+                if (edgeFnAnnot[k].type === "error") {
+                    $("#node-input-edgeFn-noerr").val(edgeFnAnnot.length);
+                    this.edgeFNnoerr = edgeFnAnnot.length;
+                }
+            }
+            $("#node-input-edgeFn").val(this.editoredgeFN.getValue());
+            this.editoredgeFN.destroy();
+            delete this.editoredgeFN;
+
+            var filterFnAnnot = this.editorfilterFn.getSession().getAnnotations();
+            this.filterFnnoerr = 0;
+            $("#node-input-noerr").val(0);
+            for (var k = 0; k < weightFnAnnot.length; k++) {
+                //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
+                if (filterFnAnnot[k].type === "error") {
+                    $("#node-input-edgeFn-noerr").val(filterFnAnnot.length);
+                    this.filterFnnoerr = filterFnAnnot.length;
+                }
+            }
+            $("#node-input-filterFn").val(this.editorfilterFn.getValue());
+            this.editorfilterFn.destroy();
+            delete this.editorfilterFn;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="graphlib_func">
+
+<div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name">
+</div>
+
+<div class="form-row">
+    <label><span> Function</span></label>
+    <select id="node-input-func" style="width:70%">
+        <option value="isDirected"> isDirected()</option>
+        <option value="isMultigraph"> isMultigraph()</option>
+        <option value="isCompound"> isCompound()</option>
+        <option value="graph"> graph()</option>
+        <option value="nodeCount"> nodeCount()</option>
+        <option value="edgeCount"> edgeCount()</option>
+        <option value="nodes"> nodes()</option>
+        <option value="edges"> edges()</option>
+        <option value="sources"> sources()</option>
+        <option value="setDefaultNodeLabel"> setDefaultNodeLabel(value)</option>
+        <option value="setDefaultEdgeLabel"> setDefaultEdgeLabel(value)</option>
+        <option value="hasNode"> hasNode(v)</option>
+        <option value="node"> node(v)</option>
+        <option value="removeNode"> removeNode(v)</option>
+        <option value="predecessors"> predecessors(v)</option>
+        <option value="successors"> successors(v)</option>
+        <option value="neighbors"> neighbors(v)</option>
+        <option value="parent"> parent(v)</option>
+        <option value="children"> children(v)</option>
+        <option value="inEdges"> inEdges(v,w)</option>
+        <option value="outEdges"> outEdges(v,w)</option>
+        <option value="nodeEdges"> nodeEdges(v,w)</option>
+        <option value="hasEdge"> hasEdge(v,w)</option>
+        <option value="edge"> edge(v,w)</option>
+        <option value="setParent"> setParent(v,w)</option>
+        <option value="removeEdge"> removeEdge(v,w)</option>
+        <option value="setNode"> setNode(v, label)</option>
+        <option value="setEdge"> setEdge(v,w,label)</option>
+        <option value="components"> components()</option>
+        <option value="findCycles"> findCycles()</option>
+        <option value="isAcyclic"> isAcyclic()</option>
+        <option value="tarjan"> tarjan()</option>
+        <option value="topsort"> topsort()</option>
+        <option value="postorder"> postorder(v)</option>
+        <option value="preorder"> preorder((v)</option>
+        <option value="dijkstra"> dijkstra(v, weightFn, edgeFn)</option>
+        <option value="dijkstraAll"> dijkstraAll(weightFn, edgeFn)</option>
+        <option value="floydWarshall"> floydWarshall( weightFn, edgeFn)</option>
+        <option value="prim"> prim(weightFn)</option>
+        <option value="nodeObj"> nodeObj(v)</option>
+        <option value="nodeObjs"> nodeObjs([vs]) | nodeObjs(v,w,...)</option>
+        <option value="selectNodeObjs"> selectNodeObjs(filterFn(v,value))</option>
+        <option value="filterNodeObjs"> filterNodeObjs(filterFn(v,value))</option>
+    </select>
+</div>
+
+<div class="form-row" id="arg_value" style="display:none;">
+    <label for="node-input-arg_value"><i class="fa fa-tag"></i> Value</label>
+    <input type="text" id="node-input-arg_value" style="width: 70%">
+    <input type="hidden" id="node-input-arg_value_type">
+</div>
+
+<div class="form-row" id="arg_v" style="display:none;">
+    <label for="node-input-arg_v"><i class="fa fa-tag"></i> Node V</label>
+    <input type="text" id="node-input-arg_v"  style="width: 70%">
+        <input type="hidden" id="node-input-arg_v_type">
+
+</div>
+
+<div class="form-row" id="arg_w" style="display:none;">
+    <label for="node-input-arg_w"><i class="fa fa-tag"></i> Node W</label>
+    <input type="text" id="node-input-arg_w" style="width: 70%">
+        <input type="hidden" id="node-input-arg_w_type">
+
+</div>
+
+
+<div class="form-row" id="arg_label" style="display:none;">
+    <label for="node-input-arg_label"><i class="fa fa-tag"></i> Label</label>
+    <input type="text" id="node-input-arg_label" style="width: 70%">
+        <input type="hidden" id="node-input-arg_label_type">
+
+</div>
+
+<div id="weightFn" style="display:none;">
+    <div class="form-row" >
+        <label for="node-input-weightFn"><i class="fa fa-tag"></i> weightFn</label>
+         <input type="hidden" id="node-input-weightFn">
+         <input type="hidden" id="node-input-weightFn-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-weightFn-editor" ></div>
+    </div>
+</div>
+
+<div id="edgeFn" style="display:none;">
+<div class="form-row" >
+    <label for="node-input-edgeFn"><i class="fa fa-tag"></i> edgeFn</label>
+    <input type="hidden" id="node-input-edgeFn">
+    <input type="hidden" id="node-input-edgeFn-noerr">
+</div>
+
+<div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-edgeFn-editor" ></div>
+    </div>
+</div>
+
+<div id="filterFn" style="display:none;">
+<div class="form-row" >
+    <label for="node-input-edgeFn"><i class="fa fa-tag"></i> filterFn</label>
+    <input type="hidden" id="node-input-filterFn">
+    <input type="hidden" id="node-input-filterFn-noerr">
+</div>
+
+<div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-filterFn-editor" ></div>
+    </div>
+</div>
+
+
+
+</script>
+
+<script type="text/x-red" data-help-name="graphlib_func">
+
+<h3>Configuration</h3>
+<ol class="node-ports">
+    <li> Graph Config
+        <dl class="message-properties">
+            <dt>graph_config <span class="property-type">obj</span></dt>
+            <dd>Defines graph structure.</dd>
+        </dl>
+    </li>
+    <li> JSON output
+        <dl class="message-properties">
+            <dt>json_output <span class="property-type">true | false </span></dt>
+            <dd>Set to true if you want to serialize the output into JSON. If you plan to use nodes from the graphlib
+                package, use false. IF you need the JSON, use true.
+                Default false.
+            </dd>
+        </dl>
+    </li>
+</ol>
+
+<h3>Input</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>msg.payload.graph <span class="property-type">JSON | obj</span></dt>
+            <dd>JSON or Object representation of the graph. If empty, new graph will be created.</dd>
+        </dl>
+    </li>
+</ol>
+
+<h3>Output</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>payload <span class="property-type">Graphlib graph object</span></dt>
+            <dd>original message with graph in msg.payload.graph. Replaces existing graph.</dd>
+        </dl>
+    </li>
+</ol>
+
+
+
+
+
+</script>

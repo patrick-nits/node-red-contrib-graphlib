@@ -1,0 +1,167 @@
+<script type="text/javascript">
+    RED.nodes.registerType('graph-config',{
+        category: 'config',
+        defaults: {
+            flush: {value: true},
+            name: {value: "Graph Config"},
+            directed: {value: false, required: true},
+            multigraph: {value: true, required: true},
+            compound: {value: true, required: true},
+            node_id_key: {value: "v", required: true},
+            edge_from_key: {value: "v", required: true},
+            edge_to_key: {value: "w", required: true},
+            edge_label_key: {value: "label", required: false},
+            node_arr_key: {value: "payload.graph.nodes", required: true},
+            edge_arr_key: {value: "payload.graph.edges", required: true}
+        },
+        label: function() {
+            return this.name;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="graph-config">
+<div class="form-row">
+    <label for="node-config-input-name"> Name</label>
+    <input type="text" id="node-config-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+    <label for="node-config-input-flush">&nbsp;</label>
+    <input type="checkbox" id="node-config-input-flush" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Create new graph and flush cache?</span>
+</div>
+<div class="form-row">
+    <label for="node-config-input-directed">&nbsp;</label>
+    <input type="checkbox" id="node-config-input-directed" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Directed graph?</span>
+</div>
+<div class="form-row">
+    <label for="node-config-input-multigraph">&nbsp;</label>
+    <input type="checkbox" id="node-config-input-multigraph" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Multigraph?</span>
+</div>
+<div class="form-row">
+    <label for="node-config-input-compound">&nbsp;</label>
+    <input type="checkbox" id="node-config-input-compound" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Compound graph?</span>
+</div>
+<div class="form-row">
+    <label for="node-config-input-node-node_arr_key"> Node Array key </label>
+    <input type="text" id="node-config-input-node_arr_key" placeholder="node_arr_key">
+</div>
+<div class="form-row">
+    <label for="node-config-input-node-edge_arr_key"> Edge Array key </label>
+    <input type="text" id="node-config-input-edge_arr_key" placeholder="edge_arr_key">
+</div>
+<div class="form-row">
+    <label for="node-config-input-node_id_key"> Node ID key </label>
+    <input type="text" id="node-config-input-node_id_key" placeholder="node_id_key">
+</div>
+<div class="form-row">
+    <label for="node-config-input-edge_from_key"> Edge FROM key</label>
+    <input type="text" id="node-config-input-edge_from_key" placeholder="edge_from_key">
+</div>
+<div class="form-row">
+    <label for="node-config-input-edge_to_key"> Edge TO key</label>
+    <input type="text" id="node-config-input-edge_to_key" placeholder="edge_to_key">
+</div>
+<div class="form-row">
+    <label for="node-config-input-edge_label_key"> Edge LABEL key</label>
+    <input type="text" id="node-config-input-edge_label_key" placeholder="edge_label_key">
+</div>
+
+</script>
+
+<script type="text/x-red" data-help-name="graph-config">
+<p>Graphlib graph create</p>
+
+<h3>Configuration</h3>
+<ol class="node-ports">
+    <li> Flush
+        <dl class="message-properties">
+            <dt>flush <span class="property-type">true | false </span></dt>
+            <dd>Set to true if you want to create a new graph and flush the cache.</dd>
+        </dl>
+    </li>
+    <li> Cleanup
+        <dl class="message-properties">
+            <dt>cleanup <span class="property-type">true | false </span></dt>
+            <dd>Set to true if you want to cleanup the message. Removes the defined further defined properties from the message.</dd>
+        </dl>
+    </li>
+    <li> Directed
+        <dl class="message-properties">
+            <dt>directed <span class="property-type">true | false </span></dt>
+            <dd>set to true to get a directed graph and false to get an undirected graph. An undirected graph does not treat the order of nodes in an edge as significant. In other words, g.edge("a", "b") === g.edge("b", "a") for an undirected graph. Default: false.</dd>
+        </dl>
+    </li>
+    <li> Multigraph
+        <dl class="message-properties">
+            <dt>multigraph <span class="property-type">true | false </span></dt>
+            <dd>set to true to allow a graph to have multiple edges between the same pair of nodes. Default: true.
+            </dd>
+
+        </dl>
+    </li>
+    <li> Compound
+        <dl class="message-properties">
+            <dt>compound <span class="property-type">true | false </span></dt>
+            <dd> set to true to allow a graph to have compound nodes - nodes which can be the parent of other nodes. Default: true.
+            </dd>
+        </dl>
+    </li>
+    <li> NodeARR Key
+        <dl class="message-properties">
+            <dt> node_arr_key <span class="property-type">string | default: "nodes" </span></dt>
+            <dd> Graphlib needs to know where your nodes array is.
+            </dd>
+        </dl>
+    </li>
+    <li> EdgeARR Key
+        <dl class="message-properties">
+            <dt> edge_arr_key <span class="property-type">string | default: "edges" </span></dt>
+           <dd> Graphlib needs to know where your edges array is.
+            </dd>
+        </dl>
+    </li>
+    <li> Node ID Key
+        <dl class="message-properties">
+            <dt> node_id_key <span class="property-type">string | default: "v" </span></dt>
+            <dd> Graphlib needs to know which property of your nodes is the ID.
+            </dd>
+        </dl>
+    </li>
+    <li> Edge FROM key
+        <dl class="message-properties">
+            <dt>edge_from_key <span class="property-type">string | default: "v"  </span></dt>
+            <dd> Graphlib needs to know which property of your edges is the FROM.
+            </dd>
+        </dl>
+    </li>
+    <li> Edge TO key
+        <dl class="message-properties">
+            <dt>edge_to_key <span class="property-type">string | default: "w"  </span></dt>
+            <dd> Graphlib needs to know which property of your edges is the TO.
+            </dd>
+        </dl>
+    </li>
+    <li> Edge LABEL key
+        <dl class="message-properties">
+            <dt>edge_label_key <span class="property-type">string | default: "label"  </span></dt>
+            <dd> Graphlib needs to know which property of your edges is the LABEL.
+            </dd>
+        </dl>
+    </li>
+</ol>
+
+<h3>Input</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>msg.payload.graph <span class="property-type">JSON | obj</span></dt>
+            <dd>JSON or Object representation of the graph. If empty, new graph will be created.</dd>
+        </dl>
+    </li>
+</ol>
+
+</script>

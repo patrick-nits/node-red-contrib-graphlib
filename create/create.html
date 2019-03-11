@@ -1,0 +1,96 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('graphlib_create', {
+        category: 'graphlib',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            name: {value: "Create graphlib graph"},
+            graph_config: {type: "graph-config", required: true},
+            json_output: {value: false},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icon.png",
+        label: function () {
+            return this.name;
+        },
+        paletteLabel: "Create Graphlib Graph",
+        outputLabels: "Graph object"
+    });
+</script>
+
+<script type="text/x-red" data-template-name="graphlib_create">
+<div class="form-row">
+    <label for="node-input-name"> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+</div>
+ <div class="form-row">
+        <label for="node-input-graph_config"> Board</label>
+         <input type="text" id="node-input-graph_config">
+    </div>
+</div>
+    <div class="form-row">
+        <label for="node-input-json_output">&nbsp;</label>
+        <input type="checkbox" id="node-input-json_output" style="display:inline-block; width:15px; vertical-align:baseline;">
+        <span>JSON output?</span>
+    </div>
+</script>
+
+
+
+<script type="text/x-red" data-help-name="graphlib_create">
+<p>Graphlib graph create</p>
+
+<h3>Configuration</h3>
+<ol class="node-ports">
+    <li> Graph Config
+        <dl class="message-properties">
+            <dt>graph_config <span class="property-type">obj</span></dt>
+            <dd>Defines graph structure.</dd>
+        </dl>
+    </li>
+        <li> JSON output
+        <dl class="message-properties">
+            <dt>json_output <span class="property-type">true | false </span></dt>
+            <dd>Set to true if you want to serialize the output into JSON. If you plan to use nodes from the graphlib package, use false. IF you need the JSON, use true.
+             Default false.</dd>
+        </dl>
+    </li>
+</ol>
+
+<h3>Input</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>msg.payload.graph <span class="property-type">JSON | obj</span></dt>
+            <dd>JSON or Object representation of the graph. If empty, new graph will be created.</dd>
+        </dl>
+    </li>
+</ol>
+
+<h3>Output</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>payload <span class="property-type">Graphlib graph object</span></dt>
+            <dd>original message with graph in msg.payload.graph. Replaces existing graph.</dd>
+        </dl>
+    </li>
+</ol>
+
+</script>
