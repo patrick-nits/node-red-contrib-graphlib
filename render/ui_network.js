@@ -18,9 +18,9 @@ module.exports = function (RED) {
      * @param config
      * @returns {*}
      */
-    function html(config) {
+    NetworkNode.prototype.html = function(config) {
         return fs.readFileSync(path.resolve(__dirname, 'network_widget.html'), 'utf8')
-    }
+    };
 
     NetworkNode.prototype.setGraph = require('../lib/func').set_graph;
 
@@ -40,10 +40,12 @@ module.exports = function (RED) {
                 ui = RED.require("node-red-dashboard")(RED);
             }
             RED.nodes.createNode(this, config);
+            node.draw_config = RED.nodes.getNode(config.draw_config).config;
+
             var done = null;
             if (checkConfig(node, config)) {
                 // Generate HTML/Angular code
-                var html = html(config);
+                var html = node.html(config);
 
                 done = ui.addWidget({
                     node: node,

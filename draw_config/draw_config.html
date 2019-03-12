@@ -1,0 +1,268 @@
+<script type="text/javascript">
+
+    var typedInput = function ($selector, $typeSelector) {
+        $selector = $($selector);
+
+        $selector.typedInput({
+            types: ['msg', 'json', 'flow', 'global'],
+            typeField: $typeSelector
+        });
+    };
+
+    var createEditor = function (editorId, $inputSelector) {
+        return RED.editor.createEditor({
+            id: editorId,
+            mode: 'ace/mode/javascript',
+            value: $($inputSelector).val(),
+            globals: {
+                msg: false,
+                context: false,
+                RED: false,
+                util: false,
+                flow: false,
+                global: false,
+                console: false,
+                Buffer: false,
+                setTimeout: false,
+                clearTimeout: false,
+                setInterval: false,
+                clearInterval: false
+            }
+        });
+    };
+
+
+    var saveEditor = function (_this, $noErrSelector, $inputSelector, editorKey) {
+        var fnAnnot = _this[editorKey].getSession().getAnnotations();
+        _this[editorKey + '_noerr'] = 0;
+        $($noErrSelector).val(0);
+        for (var k = 0; k < fnAnnot.length; k++) {
+            if (fnAnnot[k].type === "error") {
+                $($noErrSelector).val(fnAnnot.length);
+                _this[editorKey + '_noerr'] = fnAnnot.length;
+            }
+        }
+        $($inputSelector).val(_this.editorWeightFN.getValue());
+        _this.editorWeightFN.destroy();
+        delete _this.editorWeightFN;
+    };
+
+    RED.nodes.registerType('draw-config', {
+        category: 'config',
+        defaults: {
+            name: {value: 'DrawConfig'},
+            configure: {value: ''},
+            configure_type: {value: 'json'},
+            edges: {value: ''},
+            edges_type: {value: 'json'},
+            groups: {value: ''},
+            groups_type: {value: 'json'},
+            interaction: {value: ''},
+            interaction_type: {value: 'json'},
+            layout: {value: ''},
+            layout_type: {value: 'json'},
+            manipulation: {value: ''},
+            manipulation_type: {value: 'json'},
+            nodes: {value: ''},
+            nodes_type: {value: 'json'},
+            physics: {value: ''},
+            physics_type: {value: 'json'},
+            idFn: {value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID to get the id from.\n" +
+                    "* value - the current node to get the id from.\n" +
+                    "* msg - msg that triggered the algorithm.\\n\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return unique id. Number or String\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n" +
+                    "\n" +
+                    "return v; \n"},
+            labelFn: {value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID to get the label from.\n" +
+                    "* value - the current node to get the label from.\n" +
+                    "* msg - msg that triggered the algorithm.\\n\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return Number or String\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n" +
+                    "\n" +
+                    "return v; \n"},
+            titleFn: {value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID to get the title from.\n" +
+                    "* value - the current node to get the title from.\n" +
+                    "* msg - msg that triggered the algorithm.\\n\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return Number or String\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n" +
+                    "\n" +
+                    "return v; \n"},
+            groupFn: {value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID to get the id from.\n" +
+                    "* value - the current node to get the id from.\n" +
+                    "* msg - msg that triggered the algorithm.\\n\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return Number or String\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n" +
+                    "\n" +
+                    "return undefined; \n"}
+
+        },
+        label: function () {
+            return this.name;
+        },
+        oneditprepare: function () {
+            // visjs config.
+            typedInput('#node-config-input-configure', '#node-config-input-configure_type');
+            typedInput('#node-config-input-edges', '#node-config-input-edges_type');
+            typedInput('#node-config-input-groups', '#node-config-input-groups_type');
+            typedInput('#node-config-input-interaction', '#node-config-input-interaction_type');
+            typedInput('#node-config-input-layout', '#node-config-input-layout_type');
+            typedInput('#node-config-input-manipulation', '#node-config-input-manipulation_type');
+            typedInput('#node-config-input-nodes', '#node-config-input-nodes_type');
+            typedInput('#node-config-input-physics', '#node-config-input-physics_type');
+
+            // graphlib -> visjs config
+            this.idFnEditor = createEditor('node-config-input-idFn-editor', '#node-config-input-idFn');
+            this.labelFnEditor = createEditor('node-config-input-labelFn-editor', '#node-config-input-labelFn');
+            this.titleFnEditor = createEditor('node-config-input-titleFn-editor', '#node-config-input-titleFn');
+            this.groupFnEditor = createEditor('node-config-input-groupFn-editor', '#node-config-input-groupFn');
+
+        },
+        oneditsave: function () {
+            saveEditor(this,'#node-config-input-idFn-noerr','#node-config-input-idFn','idFnEditor');
+            saveEditor(this,'#node-config-input-labelFn-noerr','#node-config-input-labelFn','labelFnEditor');
+            saveEditor(this,'#node-config-input-titleFn-noerr','#node-config-input-titleFn','titleFnEditor');
+            saveEditor(this,'#node-config-input-groupFn-noerr','#node-config-input-groupFn','groupFnEditor');
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="draw-config">
+<p> Provide options to configure rendering of your graph. See <a href="http://visjs.org/docs/network/" target="_blank">http://visjs.org/docs/network/</a>
+<div class="form-row">
+    <label for="node-config-input-name"> Name</label>
+    <input type="text" id="node-config-input-name" placeholder="Name">
+</div>
+<div class="form-row" id="configure">
+    <label for="node-config-input-configure"><i class="fa fa-tag"></i> Configure</label>
+    <input type="text" id="node-config-input-configure" style="width: 70%">
+    <input type="hidden" id="node-config-input-configure_type">
+</div>
+
+<div class="form-row" id="edges">
+    <label for="node-config-input-edges"><i class="fa fa-tag"></i> edges</label>
+    <input type="text" id="node-config-input-edges" style="width: 70%">
+    <input type="hidden" id="node-config-input-edges_type">
+</div>
+
+<div class="form-row" id="groups">
+    <label for="node-config-input-groups"><i class="fa fa-tag"></i> groups</label>
+    <input type="text" id="node-config-input-groups" style="width: 70%">
+    <input type="hidden" id="node-config-input-groups_type">
+</div>
+
+<div class="form-row" id="interaction">
+    <label for="node-config-input-interaction"><i class="fa fa-tag"></i> interaction</label>
+    <input type="text" id="node-config-input-interaction" style="width: 70%">
+    <input type="hidden" id="node-config-input-interaction_type">
+</div>
+
+<div class="form-row" id="layout">
+    <label for="node-config-input-layout"><i class="fa fa-tag"></i> layout</label>
+    <input type="text" id="node-config-input-layout" style="width: 70%">
+    <input type="hidden" id="node-config-input-layout_type">
+</div>
+
+<div class="form-row" id="manipulation">
+    <label for="node-config-input-manipulation"><i class="fa fa-tag"></i> manipulation</label>
+    <input type="text" id="node-config-input-manipulation" style="width: 70%">
+    <input type="hidden" id="node-config-input-manipulation_type">
+</div>
+
+<div class="form-row" id="nodes">
+    <label for="node-config-input-nodes"><i class="fa fa-tag"></i> nodes</label>
+    <input type="text" id="node-config-input-nodes" style="width: 70%">
+    <input type="hidden" id="node-config-input-nodes_type">
+</div>
+
+<div class="form-row" id="physics">
+    <label for="node-config-input-physics"><i class="fa fa-tag"></i> physics</label>
+    <input type="text" id="node-config-input-physics" style="width: 70%">
+    <input type="hidden" id="node-config-input-physics_type">
+</div>
+
+<div>
+    <div class="form-row" >
+        <label for="node-config-input-idFn"><i class="fa fa-tag"></i> idFn</label>
+        <input type="hidden" id="node-config-input-idFn">
+        <input type="hidden" id="node-config-input-idFn-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-config-input-idFn-editor" ></div>
+    </div>
+</div>
+
+<div>
+    <div class="form-row" >
+        <label for="node-config-input-labelFn"><i class="fa fa-tag"></i> labelFn</label>
+        <input type="hidden" id="node-config-input-labelFn">
+        <input type="hidden" id="node-config-input-labelFn-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-config-input-labelFn-editor" ></div>
+    </div>
+</div>
+
+<div>
+    <div class="form-row" >
+        <label for="node-config-input-titleFn"><i class="fa fa-tag"></i> titleFn</label>
+        <input type="hidden" id="node-config-input-titleFn">
+        <input type="hidden" id="node-config-input-titleFn-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-config-input-titleFn-editor" ></div>
+    </div>
+</div>
+
+<div>
+    <div class="form-row" >
+        <label for="node-config-input-groupFn"><i class="fa fa-tag"></i> groupFn</label>
+        <input type="hidden" id="node-config-input-groupFn">
+        <input type="hidden" id="node-config-input-groupFn-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-config-input-groupFn-editor" ></div>
+    </div>
+</div>
+
+
+
+</script>
+
+<script type="text/x-red" data-help-name="draw-config">
+<p>Graphlib draw</p>
+
+
+
+
+
+
+</script>

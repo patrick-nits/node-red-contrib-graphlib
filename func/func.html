@@ -183,7 +183,7 @@
                 }
             });
 
-            var typedInput = function ($selector, $typeSelector) {
+            var typedInput = function($selector, $typeSelector) {
                 $selector = $($selector);
 
                 $selector.typedInput({
@@ -201,7 +201,7 @@
 
             var weightFnAnnot = this.editorWeightFN.getSession().getAnnotations();
             this.weightFnnoerr = 0;
-            $("#node-input-noerr").val(0);
+            $("#node-input-weightFn-noerr").val(0);
             for (var k = 0; k < weightFnAnnot.length; k++) {
                 //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
                 if (weightFnAnnot[k].type === "error") {
@@ -215,7 +215,7 @@
 
             var edgeFnAnnot = this.editoredgeFN.getSession().getAnnotations();
             this.edgeFNnoerr = 0;
-            $("#node-input-noerr").val(0);
+            $("#node-input-edgeFn-noerr").val(0);
             for (var k = 0; k < weightFnAnnot.length; k++) {
                 //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
                 if (edgeFnAnnot[k].type === "error") {
@@ -229,7 +229,7 @@
 
             var filterFnAnnot = this.editorfilterFn.getSession().getAnnotations();
             this.filterFnnoerr = 0;
-            $("#node-input-noerr").val(0);
+            $("#node-input-edgeFn-noerr").val(0);
             for (var k = 0; k < weightFnAnnot.length; k++) {
                 //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
                 if (filterFnAnnot[k].type === "error") {
@@ -353,16 +353,17 @@
 </div>
 
 <div id="filterFn" style="display:none;">
-<div class="form-row" >
-    <label for="node-input-edgeFn"><i class="fa fa-tag"></i> filterFn</label>
-    <input type="hidden" id="node-input-filterFn">
-    <input type="hidden" id="node-input-filterFn-noerr">
-</div>
+    <div class="form-row" >
+        <label for="node-input-edgeFn"><i class="fa fa-tag"></i> filterFn</label>
+        <input type="hidden" id="node-input-filterFn">
+        <input type="hidden" id="node-input-filterFn-noerr">
+    </div>
 
-<div class="form-row node-text-editor-row" style="position:relative">
-        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-filterFn-editor" ></div>
+    <div class="form-row node-text-editor-row" style="position:relative">
+            <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-filterFn-editor" ></div>
     </div>
 </div>
+
 </script>
 
 <script type="text/x-red" data-help-name="graphlib_func">
@@ -404,4 +405,5 @@
         </dl>
     </li>
 </ol>
+
 </script>
