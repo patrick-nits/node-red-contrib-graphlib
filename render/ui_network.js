@@ -1,10 +1,9 @@
 var fs = require('fs');
 var path = require('path');
-var graphlib = require("@dagrejs/graphlib");
+var graphlib = require("../lib");
 
 module.exports = function (RED) {
 
-    // check required configuration
     function checkConfig(node, conf) {
         if (!conf || !conf.hasOwnProperty("group")) {
             node.error(RED._("ui_list.error.no-group"));
@@ -13,15 +12,22 @@ module.exports = function (RED) {
         return true;
     }
 
-    function HTML(config) {
-        // TODO: This is ugly as hell. But who cares.
+    /**
+     * Ugliest way to add angular directive(?). Todo, obviously.
+     *
+     * @param config
+     * @returns {*}
+     */
+    function html(config) {
         return fs.readFileSync(path.resolve(__dirname, 'network_widget.html'), 'utf8')
     }
 
+    NetworkNode.prototype.setGraph = require('../lib/func').set_graph;
 
     function buildGraph(msg){
-      var graph =  graphlib.json.read(msg.payload);
-      console.log(graph);
+      var node = this;
+      node.setGraph(msg);
+
       return {msg: graph};
     }
 
@@ -37,7 +43,7 @@ module.exports = function (RED) {
             var done = null;
             if (checkConfig(node, config)) {
                 // Generate HTML/Angular code
-                var html = HTML(config);
+                var html = html(config);
 
                 done = ui.addWidget({
                     node: node,
@@ -50,8 +56,6 @@ module.exports = function (RED) {
                     forwardInputMessages: true,
                     storeFrontEndInputAsState: false,
                     beforeEmit: function(msg, value) {
-                        // TODO: validate network structure
-                        // TODO: store old msg, generate diff between old and new, ony emit new
                         return buildGraph(msg);
                     }
                 });
