@@ -1,23 +1,12 @@
-/**
- * Copyright JS Foundation and other contributors, http://js.foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- **/
-
 var graphlib = require("../lib");
 
 module.exports = function (RED) {
     //TODO: more descriptive & flexible structure (contains only lookups)
+
+    /**
+     * Holds function names and corresponding arguments
+     * e.g. function node(v) -> [arg_v]
+     */
     const ARG_PATTERNS = {
         all: ['arg_value', 'arg_v', 'arg_w', 'arg_label', 'weightFn', 'edgeFn'],
         isDirected: [],
@@ -64,6 +53,10 @@ module.exports = function (RED) {
         selectNodeObjs: ['filterFn'],
         filterNodeObjs: ['filterFn'],
     };
+
+    /**
+     * Holds scope for functions to call on graphlib. Either graph or alg.
+     */
     const FUNC_PATTERNS = {
         isDirected: 'graph',
         isMultigraph: 'graph',
@@ -110,6 +103,12 @@ module.exports = function (RED) {
         filterNodeObjs: 'graph',
     };
 
+    /**
+     * Sets msg.graph to node.graph.
+     *
+     * @param {NodeRED Message} msg - The message to get the current graph from.
+     * @throws Error if msg does not contain a graph in msg.graph.
+     */
     FuncNode.prototype.setGraph = function (msg) {
         var node = this;
         if (typeof msg.graph.nodes === 'function') {
@@ -119,6 +118,12 @@ module.exports = function (RED) {
         }
     };
 
+    /**
+     * Extracts function args for graphlib from message, flow or global.
+     *
+     * @param {NodeRED Message} msg - The message to get the function args from.
+     * @returns {Object} arg_obj - The Arguments to pass to graphlib.
+     */
     FuncNode.prototype.getFuncArgs = function (msg) {
         var node = this;
         var arg_obj = {};
@@ -130,6 +135,13 @@ module.exports = function (RED) {
         return arg_obj;
     };
 
+    /**
+     * Builds callback function for filterFn, weightFn or edgeFn.
+     *
+     * @param arg
+     * @param paramName
+     * @returns {Function} arg - Callback to call on graphlib weigthFn, edgeFn or filterFn.
+     */
     FuncNode.prototype.buildFuncArg = function (arg, paramName) {
         if (paramName === 'edgeFn') {
             arg = new Function('v', 'g', 'msg', 'flow', 'global', arg);
@@ -141,6 +153,14 @@ module.exports = function (RED) {
         return arg;
     };
 
+    /**
+     * Calls function on graphlib.
+     *
+     * @Todo dragScope and cleanScope exploit apply(this,...) to make msg,flow and global properties available to underlying graphlib functions and callbacks. Needs to be refactored.
+     *
+     * @param {NodeRED Message} msg - Message to use for calling the node´s function.
+     * @returns {Object} result - Object holding the result of the called function, and used params.
+     */
     FuncNode.prototype.callFunc = function (msg) {
         var node = this;
         var func_args;
@@ -191,6 +211,13 @@ module.exports = function (RED) {
 
     };
 
+    /**
+     * Builds trace for called functions on graph in flow.
+     *
+     * @param {NodeRED Message} msg
+     * @param {Object} stack_obj - Holds function name, params, result and graph for traceability.
+     * @returns {Array<Object>>} Each call of func_node adds another stack_obj to the msg.graph_func_stack.
+     */
     FuncNode.prototype.buildFuncStack = function (msg, stack_obj) {
         var node = this;
         var func_stack = [];
@@ -202,6 +229,12 @@ module.exports = function (RED) {
         return func_stack;
     };
 
+    /**
+     * Builds message to pass along the flow.
+     *
+     * @param orig_msg
+     * @returns {*}
+     */
     FuncNode.prototype.buildMsg = function (orig_msg) {
         var node = this;
 
@@ -213,6 +246,11 @@ module.exports = function (RED) {
 
     };
 
+    /**
+     *
+     * @param config
+     * @constructor
+     */
     function FuncNode(config) {
         try {
             RED.nodes.createNode(this, config);
