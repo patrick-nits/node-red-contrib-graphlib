@@ -157,13 +157,12 @@ module.exports = function (RED) {
             scope.flow = node.context().flow;
             scope.global = node.context().global;
             return scope;
-
         };
         var cleanScope = function (result, scope) {
             delete scope.msg;
             delete scope.flow;
             delete scope.global;
-            if (result.result.graph) {
+            if (result.result && result.result.graph) {
                 delete result.result.graph.msg;
                 delete result.result.graph.flow;
                 delete result.result.graph.global;
@@ -191,6 +190,7 @@ module.exports = function (RED) {
                 params: func_args,
                 result: result.result // Keep copy of result for trace TODO: might cause issues with graph modifiers.
             };
+
             return result;
         } catch (e) {
             throw "Could not call func " + node.config.func + " Error " + e;
@@ -226,11 +226,10 @@ module.exports = function (RED) {
         var node = this;
 
         var result = node.callFunc(orig_msg);
-        orig_msg.payload.graph_func_return = result.result;
-        orig_msg.graph = (result.result.graph ? result.result : node.graph); // Depending on callFunc() graph has been changed. TODO: cleanup.
+        orig_msg.payload.graph_func_return = result.result || {};
+        orig_msg.graph = (result.result && result.result.graph ? result.result : node.graph); // Depending on callFunc() graph has been changed. TODO: cleanup.
         orig_msg.graph_func_stack = node.buildFuncStack(orig_msg, result.func);
         return orig_msg;
-
     };
 
     /**

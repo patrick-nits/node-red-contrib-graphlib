@@ -67,19 +67,6 @@
             nodes_type: {value: 'json'},
             physics: {value: ''},
             physics_type: {value: 'json'},
-            idFn: {value: "/**\n" +
-                    "* --- ARGS ---\n" +
-                    "* v - the current nodeID to get the id from.\n" +
-                    "* value - the current node to get the id from.\n" +
-                    "* msg - msg that triggered the algorithm.\\n\n" +
-                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
-                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
-                    "* Must return unique id. Number or String\n" +
-                    "*/\n" +
-                    "//Start code here...\n" +
-                    "\n" +
-                    "\n" +
-                    "return v; \n"},
             labelFn: {value: "/**\n" +
                     "* --- ARGS ---\n" +
                     "* v - the current nodeID to get the label from.\n" +
@@ -136,14 +123,12 @@
             typedInput('#node-config-input-physics', '#node-config-input-physics_type');
 
             // graphlib -> visjs config
-            this.idFnEditor = createEditor('node-config-input-idFn-editor', '#node-config-input-idFn');
             this.labelFnEditor = createEditor('node-config-input-labelFn-editor', '#node-config-input-labelFn');
             this.titleFnEditor = createEditor('node-config-input-titleFn-editor', '#node-config-input-titleFn');
             this.groupFnEditor = createEditor('node-config-input-groupFn-editor', '#node-config-input-groupFn');
 
         },
         oneditsave: function () {
-            saveEditor(this,'#node-config-input-idFn-noerr','#node-config-input-idFn','idFnEditor');
             saveEditor(this,'#node-config-input-labelFn-noerr','#node-config-input-labelFn','labelFnEditor');
             saveEditor(this,'#node-config-input-titleFn-noerr','#node-config-input-titleFn','titleFnEditor');
             saveEditor(this,'#node-config-input-groupFn-noerr','#node-config-input-groupFn','groupFnEditor');
@@ -207,18 +192,6 @@
 
 <div>
     <div class="form-row" >
-        <label for="node-config-input-idFn"><i class="fa fa-tag"></i> idFn</label>
-        <input type="hidden" id="node-config-input-idFn">
-        <input type="hidden" id="node-config-input-idFn-noerr">
-    </div>
-
-    <div class="form-row node-text-editor-row" style="position:relative">
-        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-config-input-idFn-editor" ></div>
-    </div>
-</div>
-
-<div>
-    <div class="form-row" >
         <label for="node-config-input-labelFn"><i class="fa fa-tag"></i> labelFn</label>
         <input type="hidden" id="node-config-input-labelFn">
         <input type="hidden" id="node-config-input-labelFn-noerr">
@@ -259,10 +232,4 @@
 
 <script type="text/x-red" data-help-name="draw-config">
 <p>Graphlib draw</p>
-
-
-
-
-
-
 </script>

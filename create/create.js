@@ -12,6 +12,11 @@ module.exports = function (RED) {
     GraphNode.prototype.transformGraph = function (nodes, edges) {
         var node = this;
 
+
+        var id = function () {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        };
+
         if (typeof nodes === "undefined" || typeof edges === "undefined") {
             throw "Message has no nodes or edges: " + nodes + edges;
         }
@@ -28,8 +33,9 @@ module.exports = function (RED) {
                 v: RED.util.getMessageProperty(edge_node, node.graph_config.edge_from_key),
                 w: RED.util.getMessageProperty(edge_node, node.graph_config.edge_to_key),
                 value: {
-                    label: RED.util.getMessageProperty(edge_node, node.graph_config.edge_label_key),
-                    value: edge_node
+                    label: node.graph_config.edge_label_key ? RED.util.getMessageProperty(edge_node, node.graph_config.edge_label_key) : '',
+                    value: edge_node,
+                    id: node.graph_config.edge_id_key ? RED.util.getMessageProperty(edge_node, node.graph_config.edge_id_key) : id()
                 }
             }
         }, edges);

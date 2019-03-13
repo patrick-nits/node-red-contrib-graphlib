@@ -11,6 +11,7 @@
             edge_from_key: {value: "v", required: true},
             edge_to_key: {value: "w", required: true},
             edge_label_key: {value: "label", required: false},
+            edge_id_key: {value: "", required: false},
             node_arr_key: {value: "payload.graph.nodes", required: true},
             edge_arr_key: {value: "payload.graph.edges", required: true}
         },
@@ -68,6 +69,10 @@
 <div class="form-row">
     <label for="node-config-input-edge_label_key"> Edge LABEL key</label>
     <input type="text" id="node-config-input-edge_label_key" placeholder="edge_label_key">
+</div>
+<div class="form-row">
+    <label for="node-config-input-edge_id_key"> Edge ID key</label>
+    <input type="text" id="node-config-input-edge_id_key" placeholder="edge_id_key">
 </div>
 
 </script>
@@ -149,6 +154,13 @@
         <dl class="message-properties">
             <dt>edge_label_key <span class="property-type">string | default: "label"  </span></dt>
             <dd> Graphlib needs to know which property of your edges is the LABEL.
+            </dd>
+        </dl>
+    </li>
+    <li> Edge ID key
+        <dl class="message-properties">
+            <dt>edge_id_key <span class="property-type">string | default: undefined  </span></dt>
+            <dd> Graphlib needs to know which property of your edges is the id. The id must be unique. Leave empty for auto generated, unique ids.
             </dd>
         </dl>
     </li>

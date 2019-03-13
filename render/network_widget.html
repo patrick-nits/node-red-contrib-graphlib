@@ -1,29 +1,33 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<h1>DADADAD</h1>
 
-<div style="width:100%; height:100%"></div>
+<div id="{{containerId}}" style="width:100%; height:100%"></div>
+
 <script type="text/javascript">
-    var currentScript = $('script').last();
     (function (scope) {
-        var container = currentScript.prev();
         var timer = setInterval(function () {
             if (!window.vis) return;
             clearInterval(timer);
-            var buildData = function (nodes, edges) {
-                console.log(nodes);
-                console.log(edges);
-                return {nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges)};
-            };
-            var options = {
-                configure: true
-            };
-            var network = new vis.Network(container, {nodes: new vis.DataSet([]), edges: new vis.DataSet([])}, options);
+            var nodeDataSet = new vis.DataSet({});
+            var edgeDataSet = new vis.DataSet({});
+            var network = new vis.Network(document.getElementById(scope.containerId), {
+                nodes: nodeDataSet,
+                edges: edgeDataSet
+            }, {});
             scope.$watch('msg', function (msg) { //watch for an incoming NR msg
                 if (msg) {
-                    console.log(msg);
-                    var data = buildData(msg.payload.nodes,msg.payload.edges);
-                    network.setData(data);
+                    if (msg.payload.graph_func_return.options) {
+                        network.setOptions(msg.payload.graph_func_return.options);
+                    }
+                    if (msg.payload.graph_func_return.data && msg.payload.graph_func_return.data.nodes) {
+                        nodeDataSet.update(msg.payload.graph_func_return.data.nodes)
+                    }
+                    if (msg.payload.graph_func_return.data && msg.payload.graph_func_return.data.edges) {
+                        edgeDataSet.update(msg.payload.graph_func_return.data.edges)
+                    }
                 }
             });
         }, 100);

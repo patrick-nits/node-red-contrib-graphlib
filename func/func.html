@@ -203,7 +203,6 @@
             this.weightFnnoerr = 0;
             $("#node-input-weightFn-noerr").val(0);
             for (var k = 0; k < weightFnAnnot.length; k++) {
-                //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
                 if (weightFnAnnot[k].type === "error") {
                     $("#node-input-weightFn-noerr").val(weightFnAnnot.length);
                     this.weightFnnoerr = weightFnAnnot.length;
@@ -217,7 +216,6 @@
             this.edgeFNnoerr = 0;
             $("#node-input-edgeFn-noerr").val(0);
             for (var k = 0; k < weightFnAnnot.length; k++) {
-                //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
                 if (edgeFnAnnot[k].type === "error") {
                     $("#node-input-edgeFn-noerr").val(edgeFnAnnot.length);
                     this.edgeFNnoerr = edgeFnAnnot.length;
@@ -231,7 +229,6 @@
             this.filterFnnoerr = 0;
             $("#node-input-edgeFn-noerr").val(0);
             for (var k = 0; k < weightFnAnnot.length; k++) {
-                //console.log(annot[k].type,":",annot[k].text, "on line", annot[k].row);
                 if (filterFnAnnot[k].type === "error") {
                     $("#node-input-edgeFn-noerr").val(filterFnAnnot.length);
                     this.filterFnnoerr = filterFnAnnot.length;
