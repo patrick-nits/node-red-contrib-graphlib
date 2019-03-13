@@ -1,7 +1,4 @@
 <script type="text/javascript">
-    /*
-
-     */
     var arg_patterns = {
         all: ['#arg_value', '#arg_v', '#arg_w', '#arg_label', '#weightFn', '#edgeFn', '#filterFn'],
         isDirected: [],
@@ -46,7 +43,8 @@
         nodeObj: ['#arg_v'],
         nodeObjs: ['#arg_v'],
         selectNodeObjs: ['#filterFn'],
-        filterNodeObjs: ['#filterFn']
+        filterNodeObjs: ['#filterFn'],
+        modifyNodeObjs: ['#changeFn']
     };
 
     RED.nodes.registerType("graphlib_func", {
@@ -95,7 +93,7 @@
                     "* value - the current node to select edges for.\n" +
                     "* g_old - Inital graph to filter from.\n" +
                     "* g_new - New graph, where nodes get added based on filter return value.\n" +
-                    "* msg - msg that triggered the algorithm.\\n\n" +
+                    "* msg - msg that triggered the function.\\n\n" +
                     "* flow - the current flow. Acces with flow.get('variable_name').\n" +
                     "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
                     "* Must return Boolean.\n" +
@@ -104,6 +102,23 @@
                     "\n" +
                     "\n" +
                     "return true; "
+            },
+            changeFn: {
+                value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID. !Note: if you change this you need to handle the updated edge values yourself. Have fun with g_old and g_new.\n" +
+                    "* value - the current node to modify.\n" +
+                    "* g_old - Inital graph to filter from.\n" +
+                    "* g_new - New graph, where nodes get added based on filter return value.\n" +
+                    "* msg - msg that triggered the function.\\n\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return Array: [v,ModifiedNodeValue].\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n" +
+                    "\n" +
+                    "return [v,value];"
             },
         },
         inputs: 1,
@@ -115,75 +130,8 @@
         },
         oneditprepare: function () {
 
-            //Hide and show inputs
-            $('#node-input-func').change(function () {
 
-                $(arg_patterns.all.join()).hide();
-                $(arg_patterns[$(this).val()].join()).show();
-
-            });
-
-            this.editorWeightFN = RED.editor.createEditor({
-                id: 'node-input-weightFn-editor',
-                mode: 'ace/mode/javascript',
-                value: $("#node-input-weightFn").val(),
-                globals: {
-                    msg: false,
-                    context: false,
-                    RED: false,
-                    util: false,
-                    flow: false,
-                    global: false,
-                    console: false,
-                    Buffer: false,
-                    setTimeout: false,
-                    clearTimeout: false,
-                    setInterval: false,
-                    clearInterval: false
-                }
-            });
-
-            this.editoredgeFN = RED.editor.createEditor({
-                id: 'node-input-edgeFn-editor',
-                mode: 'ace/mode/javascript',
-                value: $("#node-input-edgeFn").val(),
-                globals: {
-                    msg: false,
-                    context: false,
-                    RED: false,
-                    util: false,
-                    flow: false,
-                    global: false,
-                    console: false,
-                    Buffer: false,
-                    setTimeout: false,
-                    clearTimeout: false,
-                    setInterval: false,
-                    clearInterval: false
-                }
-            });
-
-            this.editorfilterFn = RED.editor.createEditor({
-                id: 'node-input-filterFn-editor',
-                mode: 'ace/mode/javascript',
-                value: $("#node-input-filterFn").val(),
-                globals: {
-                    msg: false,
-                    context: false,
-                    RED: false,
-                    util: false,
-                    flow: false,
-                    global: false,
-                    console: false,
-                    Buffer: false,
-                    setTimeout: false,
-                    clearTimeout: false,
-                    setInterval: false,
-                    clearInterval: false
-                }
-            });
-
-            var typedInput = function($selector, $typeSelector) {
+            var typedInput = function ($selector, $typeSelector) {
                 $selector = $($selector);
 
                 $selector.typedInput({
@@ -192,6 +140,41 @@
                 });
             };
 
+            var createEditor = function (editorId, $inputSelector) {
+                return RED.editor.createEditor({
+                    id: editorId,
+                    mode: 'ace/mode/javascript',
+                    value: $($inputSelector).val(),
+                    globals: {
+                        msg: false,
+                        context: false,
+                        RED: false,
+                        util: false,
+                        flow: false,
+                        global: false,
+                        console: false,
+                        Buffer: false,
+                        setTimeout: false,
+                        clearTimeout: false,
+                        setInterval: false,
+                        clearInterval: false
+                    }
+                });
+            };
+
+            //Hide and show inputs
+            $('#node-input-func').change(function () {
+
+                $(arg_patterns.all.join()).hide();
+                $(arg_patterns[$(this).val()].join()).show();
+
+            });
+
+            this.editorWeightFn = createEditor('node-input-weightFn-editor', '#node-input-weightFn');
+            this.editoredgeFn = createEditor('node-input-edgeFn-editor', '#node-input-edgeFn');
+            this.editorfilterFn = createEditor('node-input-filterFn-editor', '#node-input-filterFn');
+            this.editorchangeFn = createEditor('node-input-changeFn-editor', '#node-input-changeFn');
+
             typedInput('#node-input-arg_value', "#node-input-arg_value_type");
             typedInput('#node-input-arg_v', "#node-input-arg_v_type");
             typedInput('#node-input-arg_w', "#node-input-arg_w_type");
@@ -199,44 +182,26 @@
         },
         oneditsave: function () {
 
-            var weightFnAnnot = this.editorWeightFN.getSession().getAnnotations();
-            this.weightFnnoerr = 0;
-            $("#node-input-weightFn-noerr").val(0);
-            for (var k = 0; k < weightFnAnnot.length; k++) {
-                if (weightFnAnnot[k].type === "error") {
-                    $("#node-input-weightFn-noerr").val(weightFnAnnot.length);
-                    this.weightFnnoerr = weightFnAnnot.length;
+            var saveEditor = function (_this, $noErrSelector, $inputSelector, editorKey) {
+                var fnAnnot = _this[editorKey].getSession().getAnnotations();
+                _this[editorKey + '_noerr'] = 0;
+                $($noErrSelector).val(0);
+                for (var k = 0; k < fnAnnot.length; k++) {
+                    if (fnAnnot[k].type === "error") {
+                        $($noErrSelector).val(fnAnnot.length);
+                        _this[editorKey + '_noerr'] = fnAnnot.length;
+                    }
                 }
-            }
-            $("#node-input-weightFn").val(this.editorWeightFN.getValue());
-            this.editorWeightFN.destroy();
-            delete this.editorWeightFN;
+                $($inputSelector).val(_this[editorKey].getValue());
+                _this[editorKey].destroy();
+                delete _this[editorKey];
+            };
 
-            var edgeFnAnnot = this.editoredgeFN.getSession().getAnnotations();
-            this.edgeFNnoerr = 0;
-            $("#node-input-edgeFn-noerr").val(0);
-            for (var k = 0; k < weightFnAnnot.length; k++) {
-                if (edgeFnAnnot[k].type === "error") {
-                    $("#node-input-edgeFn-noerr").val(edgeFnAnnot.length);
-                    this.edgeFNnoerr = edgeFnAnnot.length;
-                }
-            }
-            $("#node-input-edgeFn").val(this.editoredgeFN.getValue());
-            this.editoredgeFN.destroy();
-            delete this.editoredgeFN;
 
-            var filterFnAnnot = this.editorfilterFn.getSession().getAnnotations();
-            this.filterFnnoerr = 0;
-            $("#node-input-edgeFn-noerr").val(0);
-            for (var k = 0; k < weightFnAnnot.length; k++) {
-                if (filterFnAnnot[k].type === "error") {
-                    $("#node-input-edgeFn-noerr").val(filterFnAnnot.length);
-                    this.filterFnnoerr = filterFnAnnot.length;
-                }
-            }
-            $("#node-input-filterFn").val(this.editorfilterFn.getValue());
-            this.editorfilterFn.destroy();
-            delete this.editorfilterFn;
+            saveEditor(this, 'node-input-edgeFn-noerr', '#node-input-edgeFn', 'editoredgeFn');
+            saveEditor(this, 'node-input-weightFn-noerr', '#node-input-weightFn', 'editorWeightFn');
+            saveEditor(this, 'node-input-filterFn-noerr', '#node-input-filterFn', 'editorfilterFn');
+            saveEditor(this, 'node-input-changeFn-noerr', '#node-input-changeFn', 'editorchangeFn');
         }
     });
 </script>
@@ -294,6 +259,7 @@
         <option value="nodeObjs"> nodeObjs([vs]) | nodeObjs(v,w,...)</option>
         <option value="selectNodeObjs"> selectNodeObjs(filterFn(v,value))</option>
         <option value="filterNodeObjs"> filterNodeObjs(filterFn(v,value))</option>
+        <option value="modifyNodeObjs"> modifyNodeObjs(changeFn(v,value))</option>
     </select>
 </div>
 
@@ -361,6 +327,20 @@
     </div>
 </div>
 
+<div id="changeFn" style="display:none;">
+    <div class="form-row" >
+        <label for="node-input-edgeFn"><i class="fa fa-tag"></i> changeFn</label>
+        <input type="hidden" id="node-input-changeFn">
+        <input type="hidden" id="node-input-changeFn-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+            <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-changeFn-editor" ></div>
+    </div>
+</div>
+
+
+
 </script>
 
 <script type="text/x-red" data-help-name="graphlib_func">
@@ -402,5 +382,7 @@
         </dl>
     </li>
 </ol>
+
+
 
 </script>

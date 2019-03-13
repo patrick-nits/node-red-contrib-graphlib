@@ -1,52 +1,5 @@
 <script type="text/javascript">
 
-    var typedInput = function ($selector, $typeSelector) {
-        $selector = $($selector);
-
-        $selector.typedInput({
-            types: ['msg', 'json', 'flow', 'global'],
-            typeField: $typeSelector
-        });
-    };
-
-    var createEditor = function (editorId, $inputSelector) {
-        return RED.editor.createEditor({
-            id: editorId,
-            mode: 'ace/mode/javascript',
-            value: $($inputSelector).val(),
-            globals: {
-                msg: false,
-                context: false,
-                RED: false,
-                util: false,
-                flow: false,
-                global: false,
-                console: false,
-                Buffer: false,
-                setTimeout: false,
-                clearTimeout: false,
-                setInterval: false,
-                clearInterval: false
-            }
-        });
-    };
-
-
-    var saveEditor = function (_this, $noErrSelector, $inputSelector, editorKey) {
-        var fnAnnot = _this[editorKey].getSession().getAnnotations();
-        _this[editorKey + '_noerr'] = 0;
-        $($noErrSelector).val(0);
-        for (var k = 0; k < fnAnnot.length; k++) {
-            if (fnAnnot[k].type === "error") {
-                $($noErrSelector).val(fnAnnot.length);
-                _this[editorKey + '_noerr'] = fnAnnot.length;
-            }
-        }
-        $($inputSelector).val(_this.editorWeightFN.getValue());
-        _this.editorWeightFN.destroy();
-        delete _this.editorWeightFN;
-    };
-
     RED.nodes.registerType('draw-config', {
         category: 'config',
         defaults: {
@@ -112,6 +65,38 @@
             return this.name;
         },
         oneditprepare: function () {
+
+            var typedInput = function ($selector, $typeSelector) {
+                $selector = $($selector);
+
+                $selector.typedInput({
+                    types: ['msg', 'json', 'flow', 'global'],
+                    typeField: $typeSelector
+                });
+            };
+
+            var createEditor = function (editorId, $inputSelector) {
+                return RED.editor.createEditor({
+                    id: editorId,
+                    mode: 'ace/mode/javascript',
+                    value: $($inputSelector).val(),
+                    globals: {
+                        msg: false,
+                        context: false,
+                        RED: false,
+                        util: false,
+                        flow: false,
+                        global: false,
+                        console: false,
+                        Buffer: false,
+                        setTimeout: false,
+                        clearTimeout: false,
+                        setInterval: false,
+                        clearInterval: false
+                    }
+                });
+            };
+
             // visjs config.
             typedInput('#node-config-input-configure', '#node-config-input-configure_type');
             typedInput('#node-config-input-edges', '#node-config-input-edges_type');
@@ -129,6 +114,22 @@
 
         },
         oneditsave: function () {
+
+            var saveEditor = function (_this, $noErrSelector, $inputSelector, editorKey) {
+                var fnAnnot = _this[editorKey].getSession().getAnnotations();
+                _this[editorKey + '_noerr'] = 0;
+                $($noErrSelector).val(0);
+                for (var k = 0; k < fnAnnot.length; k++) {
+                    if (fnAnnot[k].type === "error") {
+                        $($noErrSelector).val(fnAnnot.length);
+                        _this[editorKey + '_noerr'] = fnAnnot.length;
+                    }
+                }
+                $($inputSelector).val(_this[editorKey].getValue());
+                _this[editorKey].destroy();
+                delete _this[editorKey];
+            };
+
             saveEditor(this,'#node-config-input-labelFn-noerr','#node-config-input-labelFn','labelFnEditor');
             saveEditor(this,'#node-config-input-titleFn-noerr','#node-config-input-titleFn','titleFnEditor');
             saveEditor(this,'#node-config-input-groupFn-noerr','#node-config-input-groupFn','groupFnEditor');

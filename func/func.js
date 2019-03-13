@@ -52,6 +52,7 @@ module.exports = function (RED) {
         nodeObjs: ['arg_v'],
         selectNodeObjs: ['filterFn'],
         filterNodeObjs: ['filterFn'],
+        modifyNodeObjs: ['changeFn']
     };
 
     /**
@@ -101,6 +102,7 @@ module.exports = function (RED) {
         nodeObjs: 'graph',
         selectNodeObjs: 'graph',
         filterNodeObjs: 'graph',
+        modifyNodeObjs: 'graph'
     };
 
     FuncNode.prototype.setGraph = require('../lib/func').set_graph;
@@ -134,7 +136,7 @@ module.exports = function (RED) {
             arg = new Function('v', 'g', 'msg', 'flow', 'global', arg);
         } else if (paramName === 'weightFn') {
             arg = new Function('e', 'g', 'msg', 'flow', 'global', arg)
-        } else if (paramName === 'filterFn') {
+        } else if (paramName === 'filterFn' || paramName === 'changeFn') {
             arg = new Function('v', 'value', 'g_old','g_new', 'msg', 'flow', 'global', arg)
         }
         return arg;
