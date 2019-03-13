@@ -42,7 +42,7 @@ module.exports = function (RED) {
     NetworkNode.prototype.buildGraph = function (msg) {
         var node = this;
         node.setGraph(msg);
-        msg.payload.graph_func_return = {
+        msg.payload = {
             options: node.buildOptions(msg),
             data: {
                 nodes: node.graph.nodes().map(function (v) {

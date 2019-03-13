@@ -52,7 +52,8 @@ module.exports = function (RED) {
         nodeObjs: ['arg_v'],
         selectNodeObjs: ['filterFn'],
         filterNodeObjs: ['filterFn'],
-        modifyNodeObjs: ['changeFn']
+        modifyNodeObjs: ['changeFn'],
+        setNodeObj: ['arg_nodeObjs']
     };
 
     /**
@@ -102,7 +103,8 @@ module.exports = function (RED) {
         nodeObjs: 'graph',
         selectNodeObjs: 'graph',
         filterNodeObjs: 'graph',
-        modifyNodeObjs: 'graph'
+        modifyNodeObjs: 'graph',
+        setNodeObj: 'graph'
     };
 
     FuncNode.prototype.setGraph = require('../lib/func').set_graph;
@@ -228,7 +230,7 @@ module.exports = function (RED) {
         var node = this;
 
         var result = node.callFunc(orig_msg);
-        orig_msg.payload.graph_func_return = result.result || {};
+        orig_msg.payload = result.result || {};
         orig_msg.graph = (result.result && result.result.graph ? result.result : node.graph); // Depending on callFunc() graph has been changed. TODO: cleanup.
         orig_msg.graph_func_stack = node.buildFuncStack(orig_msg, result.func);
         return orig_msg;

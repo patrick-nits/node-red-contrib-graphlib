@@ -1,6 +1,6 @@
 <script type="text/javascript">
     var arg_patterns = {
-        all: ['#arg_value', '#arg_v', '#arg_w', '#arg_label', '#weightFn', '#edgeFn', '#filterFn'],
+        all: ['#arg_value', '#arg_v', '#arg_w', '#arg_label', '#weightFn', '#edgeFn', '#filterFn', '#changeFn','#arg_nodeObjs'],
         isDirected: [],
         isMultigraph: [],
         isCompound: [],
@@ -44,7 +44,8 @@
         nodeObjs: ['#arg_v'],
         selectNodeObjs: ['#filterFn'],
         filterNodeObjs: ['#filterFn'],
-        modifyNodeObjs: ['#changeFn']
+        modifyNodeObjs: ['#changeFn'],
+        setNodeObj: ['#arg_nodeObjs']
     };
 
     RED.nodes.registerType("graphlib_func", {
@@ -120,6 +121,8 @@
                     "\n" +
                     "return [v,value];"
             },
+            arg_nodeObjs: {},
+            arg_nodeObjs_type: {}
         },
         inputs: 1,
         outputs: 1,
@@ -179,6 +182,7 @@
             typedInput('#node-input-arg_v', "#node-input-arg_v_type");
             typedInput('#node-input-arg_w', "#node-input-arg_w_type");
             typedInput('#node-input-arg_label', "#node-input-arg_label_type");
+            typedInput('#node-input-arg_nodeObjs', "#node-input-arg_nodeObjs_type");
         },
         oneditsave: function () {
 
@@ -257,6 +261,7 @@
         <option value="prim"> prim(weightFn)</option>
         <option value="nodeObj"> nodeObj(v)</option>
         <option value="nodeObjs"> nodeObjs([vs]) | nodeObjs(v,w,...)</option>
+        <option value="setNodeObj"> setNodeObj([vs])</option>
         <option value="selectNodeObjs"> selectNodeObjs(filterFn(v,value))</option>
         <option value="filterNodeObjs"> filterNodeObjs(filterFn(v,value))</option>
         <option value="modifyNodeObjs"> modifyNodeObjs(changeFn(v,value))</option>
@@ -280,7 +285,12 @@
     <label for="node-input-arg_w"><i class="fa fa-tag"></i> Node W</label>
     <input type="text" id="node-input-arg_w" style="width: 70%">
         <input type="hidden" id="node-input-arg_w_type">
+</div>
 
+<div class="form-row" id="arg_nodeObjs" style="display:none;">
+    <label for="node-input-arg_nodeObjs"><i class="fa fa-tag"></i> NodeObjs to update or set</label>
+    <input type="text" id="node-input-arg_nodeObjs" style="width: 70%">
+        <input type="hidden" id="node-input-arg_nodeObjs_type">
 </div>
 
 

@@ -19,14 +19,14 @@
             }, {});
             scope.$watch('msg', function (msg) { //watch for an incoming NR msg
                 if (msg) {
-                    if (msg.payload.graph_func_return.options) {
-                        network.setOptions(msg.payload.graph_func_return.options);
+                    if (msg.payload.options) {
+                        network.setOptions(msg.payload.options);
                     }
-                    if (msg.payload.graph_func_return.data && msg.payload.graph_func_return.data.nodes) {
-                        nodeDataSet.update(msg.payload.graph_func_return.data.nodes)
+                    if (msg.payload.data && msg.payload.data.nodes) {
+                        nodeDataSet.update(msg.payload.data.nodes)
                     }
-                    if (msg.payload.graph_func_return.data && msg.payload.graph_func_return.data.edges) {
-                        edgeDataSet.update(msg.payload.graph_func_return.data.edges)
+                    if (msg.payload.data && msg.payload.data.edges) {
+                        edgeDataSet.update(msg.payload.data.edges)
                     }
                 }
             });
