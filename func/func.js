@@ -8,7 +8,7 @@ module.exports = function (RED) {
      * e.g. function node(v) -> [arg_v]
      */
     const ARG_PATTERNS = {
-        all: ['arg_value', 'arg_v', 'arg_w', 'arg_label', 'weightFn', 'edgeFn'],
+        all: ['arg_value', 'arg_v', 'arg_w', 'arg_label', 'weightFn', 'edgeFn','changeFn','filterFn'],
         isDirected: [],
         isMultigraph: [],
         isCompound: [],
@@ -52,7 +52,7 @@ module.exports = function (RED) {
         nodeObjs: ['arg_v'],
         selectNodeObjs: ['filterFn'],
         filterNodeObjs: ['filterFn'],
-        modifyNodeObjs: ['changeFn'],
+        modifyNodeObjs: ['changeFn','filterFn'],
         setNodeObj: ['arg_nodeObjs']
     };
 
@@ -173,8 +173,6 @@ module.exports = function (RED) {
             }
             return result;
         };
-
-        try {
             func_args = node.getFuncArgs(msg);
 
             // Actual Result
@@ -196,10 +194,6 @@ module.exports = function (RED) {
             };
 
             return result;
-        } catch (e) {
-            throw "Could not call func " + node.config.func + " Error " + e;
-        }
-
     };
 
     /**

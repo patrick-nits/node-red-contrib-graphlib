@@ -44,7 +44,7 @@
         nodeObjs: ['#arg_v'],
         selectNodeObjs: ['#filterFn'],
         filterNodeObjs: ['#filterFn'],
-        modifyNodeObjs: ['#changeFn'],
+        modifyNodeObjs: ['#changeFn','#filterFn'],
         setNodeObj: ['#arg_nodeObjs']
     };
 
@@ -264,7 +264,7 @@
         <option value="setNodeObj"> setNodeObj([vs])</option>
         <option value="selectNodeObjs"> selectNodeObjs(filterFn(v,value))</option>
         <option value="filterNodeObjs"> filterNodeObjs(filterFn(v,value))</option>
-        <option value="modifyNodeObjs"> modifyNodeObjs(changeFn(v,value))</option>
+        <option value="modifyNodeObjs"> modifyNodeObjs(filterFn(v,value),changeFn(v,value))</option>
     </select>
 </div>
 
