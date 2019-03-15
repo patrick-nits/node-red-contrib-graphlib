@@ -47,19 +47,19 @@ module.exports = function (RED) {
             data: {
                 nodes: node.graph.nodes().map(function (v) {
                     var nodeObj = node.graph.nodeObj(v);
-                    return {
+                    return Object.assign({}, nodeObj, {
                         id: v,
-                        label: node.config.func.titleFn(v, nodeObj, msg, node.flow, node.global),
-                        title: node.config.func.labelFn(v, nodeObj, msg, node.flow, node.global),
+                        label: node.config.func.labelFn(v, nodeObj, msg, node.flow, node.global),
+                        title: node.config.func.titleFn(v, nodeObj, msg, node.flow, node.global),
                         group: node.config.func.groupFn(v, nodeObj, msg, node.flow, node.global),
-                        data: nodeObj.value
-                    };
+                    });
                 }),
                 edges: node.graph.edges().map(function (e) {
                     var label = node.graph.edge(e);
-                    return {id: label.label, from: e.v, to: e.w, label: label.label}
+                    return {id: label.id, from: e.v, to: e.w, label: label.label}
                 })
-            }
+            },
+            callback: node.draw_config.graphCallbackFns
         };
         return msg;
     };
@@ -81,7 +81,7 @@ module.exports = function (RED) {
             node.config.func = {
                 titleFn: new Function('v', 'value', 'msg', 'flow', 'global', node.draw_config.titleFn),
                 labelFn: new Function('v', 'value', 'msg', 'flow', 'global', node.draw_config.labelFn),
-                groupFn: new Function('v', 'value', 'msg', 'flow', 'global', node.draw_config.groupFn)
+                groupFn: new Function('v', 'value', 'msg', 'flow', 'global', node.draw_config.groupFn),
             };
             if (checkConfig(node, config)) {
                 done = ui.addWidget({
@@ -92,7 +92,6 @@ module.exports = function (RED) {
                     templateScope: "local",
                     group: config.group,
                     emitOnlyNewValues: true,
-                    fuh: 1,
                     forwardInputMessages: true,
                     storeFrontEndInputAsState: false,
                     beforeEmit: function (msg) {

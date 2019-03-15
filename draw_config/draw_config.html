@@ -20,7 +20,8 @@
             nodes_type: {value: 'json'},
             physics: {value: ''},
             physics_type: {value: 'json'},
-            labelFn: {value: "/**\n" +
+            labelFn: {
+                value: "/**\n" +
                     "* --- ARGS ---\n" +
                     "* v - the current nodeID to get the label from.\n" +
                     "* value - the current node to get the label from.\n" +
@@ -32,8 +33,10 @@
                     "//Start code here...\n" +
                     "\n" +
                     "\n" +
-                    "return v; \n"},
-            titleFn: {value: "/**\n" +
+                    "return v; \n"
+            },
+            titleFn: {
+                value: "/**\n" +
                     "* --- ARGS ---\n" +
                     "* v - the current nodeID to get the title from.\n" +
                     "* value - the current node to get the title from.\n" +
@@ -45,8 +48,10 @@
                     "//Start code here...\n" +
                     "\n" +
                     "\n" +
-                    "return v; \n"},
-            groupFn: {value: "/**\n" +
+                    "return v; \n"
+            },
+            groupFn: {
+                value: "/**\n" +
                     "* --- ARGS ---\n" +
                     "* v - the current nodeID to get the id from.\n" +
                     "* value - the current node to get the id from.\n" +
@@ -58,7 +63,19 @@
                     "//Start code here...\n" +
                     "\n" +
                     "\n" +
-                    "return undefined; \n"}
+                    "return undefined; \n"
+            },
+            graphCallbackFns: {
+                value: "/**\n" +
+                    "* Use this to assign callbacks, handlers, and further customise the view. See http://visjs.org/docs/network/#methodManipulation \n" +
+                    "* --- ARGS ---\n" +
+                    "* graph -  the graph (or network) to assign callbacks to.\n" +
+                    "* window - the window object and all descendants. You are in the browser sandbox.\n" +
+                    "* $ - jquery is available too.\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n"
+            }
 
         },
         label: function () {
@@ -111,6 +128,7 @@
             this.labelFnEditor = createEditor('node-config-input-labelFn-editor', '#node-config-input-labelFn');
             this.titleFnEditor = createEditor('node-config-input-titleFn-editor', '#node-config-input-titleFn');
             this.groupFnEditor = createEditor('node-config-input-groupFn-editor', '#node-config-input-groupFn');
+            this.graphCallbackFnsEditor = createEditor('node-config-input-graphCallbackFns-editor', '#node-config-input-graphCallbackFns');
 
         },
         oneditsave: function () {
@@ -130,9 +148,10 @@
                 delete _this[editorKey];
             };
 
-            saveEditor(this,'#node-config-input-labelFn-noerr','#node-config-input-labelFn','labelFnEditor');
-            saveEditor(this,'#node-config-input-titleFn-noerr','#node-config-input-titleFn','titleFnEditor');
-            saveEditor(this,'#node-config-input-groupFn-noerr','#node-config-input-groupFn','groupFnEditor');
+            saveEditor(this, '#node-config-input-labelFn-noerr', '#node-config-input-labelFn', 'labelFnEditor');
+            saveEditor(this, '#node-config-input-titleFn-noerr', '#node-config-input-titleFn', 'titleFnEditor');
+            saveEditor(this, '#node-config-input-groupFn-noerr', '#node-config-input-groupFn', 'groupFnEditor');
+            saveEditor(this, '#node-config-input-graphCallbackFns-noerr', '#node-config-input-graphCallbackFns', 'graphCallbackFnsEditor');
         }
     });
 </script>
@@ -226,6 +245,19 @@
         <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-config-input-groupFn-editor" ></div>
     </div>
 </div>
+<div>
+    <div class="form-row" >
+        <label for="node-config-input-graphCallbackFns"><i class="fa fa-tag"></i> graphCallbackFns</label>
+        <input type="hidden" id="node-config-input-graphCallbackFns">
+        <input type="hidden" id="node-config-input-graphCallbackFns-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+        <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-config-input-graphCallbackFns-editor" ></div>
+    </div>
+</div>
+
+
 
 
 
@@ -233,4 +265,6 @@
 
 <script type="text/x-red" data-help-name="draw-config">
 <p>Graphlib draw</p>
+
+
 </script>

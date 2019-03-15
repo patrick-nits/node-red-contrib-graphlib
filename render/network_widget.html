@@ -2,10 +2,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
       integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-<h1>DADADAD</h1>
-
 <div id="{{containerId}}" style="width:100%; height:100%"></div>
-
 <script type="text/javascript">
     (function (scope) {
         var timer = setInterval(function () {
@@ -17,10 +14,17 @@
                 nodes: nodeDataSet,
                 edges: edgeDataSet
             }, {});
+            var is_options_set = false;
+            var is_callback_set = false;
             scope.$watch('msg', function (msg) { //watch for an incoming NR msg
                 if (msg) {
-                    if (msg.payload.options) {
+                    if (!is_options_set && msg.payload.options) {
                         network.setOptions(msg.payload.options);
+                        is_options_set = true;
+                    }
+                    if (!is_callback_set && msg.payload.callback) {
+                        new Function('graph', msg.payload.callback)(network);
+                        is_callback_set = true;
                     }
                     if (msg.payload.data && msg.payload.data.nodes) {
                         nodeDataSet.update(msg.payload.data.nodes)
