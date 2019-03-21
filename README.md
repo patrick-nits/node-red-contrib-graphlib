@@ -117,4 +117,4 @@ Feel free to submit pull requests to further improve functionality and fix issue
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/patrick-nits/node-red-contrib-graphlib/blob/master/LICENSE) file for details
