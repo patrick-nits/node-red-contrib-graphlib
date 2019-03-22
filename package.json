@@ -16,7 +16,8 @@
       "graphlib_create": "create/create.js",
       "graphlib_func": "func/func.js",
       "graphlib_render": "render/ui_network.js",
-      "watson_toneanalyzer": "watson_toneanalyzer/v3.js"
+      "watson_toneanalyzer": "watson_toneanalyzer/v3.js",
+      "watson_nlp": "watson_nlp/v1.js"
     }
   }
 }
