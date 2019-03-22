@@ -5,7 +5,8 @@
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
     "lodash": "^4.17.11",
-    "vis": "^4.21.0"
+    "vis": "^4.21.0",
+    "watson-developer-cloud": "^3.18.3"
   },
   "keywords": [
     "node-red node-red-dashboard"
@@ -14,7 +15,8 @@
     "nodes": {
       "graphlib_create": "create/create.js",
       "graphlib_func": "func/func.js",
-      "graphlib_render": "render/ui_network.js"
+      "graphlib_render": "render/ui_network.js",
+      "watson_toneanalyzer": "watson_toneanalyzer/v3.js"
     }
   }
 }
