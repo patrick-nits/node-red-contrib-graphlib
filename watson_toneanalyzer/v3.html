@@ -43,13 +43,14 @@
                     "//Start code here...\n" +
                     "\n" +
                     "\n" +
-                    "return v; "
+                    "return value; "
             },
             propertyWriteFn: {
                 value: "/**\n" +
                     "* --- ARGS ---\n" +
                     "* v - the current nodeID to write the tone results to.\n" +
                     "* value - the current node to write the tone results to.\n" +
+                    "* tones - the tone identified by watson.\n" +
                     "* msg - msg that triggered the function.\n" +
                     "* flow - the current flow. Acces with flow.get('variable_name').\n" +
                     "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
@@ -58,7 +59,7 @@
                     "//Start code here...\n" +
                     "\n" +
                     "\n" +
-                    "return value; "
+                    "return Object.assign({},value,tones); "
             }
         },
         inputs: 1,
