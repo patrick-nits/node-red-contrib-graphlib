@@ -91,7 +91,6 @@ module.exports = function (RED) {
             });
         })).then(function (data) {
             var result = _.map(data, function (d) {
-                console.log(d);
                 msg.graph.setNode(d.v, node.propertyWriteFn(d.v, d.value, d.analysis));
                 return msg.graph.node(d.v);
             });
