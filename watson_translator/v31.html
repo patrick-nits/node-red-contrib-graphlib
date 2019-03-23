@@ -1,0 +1,160 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('watson_translator', {
+        category: 'graphlib',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            name: {value: ""},
+            watson_config: {type: "watson-config", required: true},
+            opt_text_source: {value: ""},
+            opt_text_source_type: {value: ""},
+            opt_source_lang: {value: "de"},
+            opt_source_lang_type: {value: "lang"},
+            opt_target_lang: {value: "en"},
+            opt_target_lang_type: {value: "lang"},
+            filterFn: {
+                value: "/**\n" +
+                    "* --- ARGS ---\n" +
+                    "* v - the current nodeID to select edges for.\n" +
+                    "* value - the current node to select edges for.\n" +
+                    "* g_old - Inital graph to filter from.\n" +
+                    "* g_new - New graph, where nodes get added based on filter return value.\n" +
+                    "* msg - msg that triggered the function.\n" +
+                    "* flow - the current flow. Acces with flow.get('variable_name').\n" +
+                    "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
+                    "* Must return Boolean.\n" +
+                    "*/\n" +
+                    "//Start code here...\n" +
+                    "\n" +
+                    "\n" +
+                    "return true; "
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icon.png",
+        label: function () {
+            return this.name || "watson_translator";
+        },
+        oneditprepare: function () {
+            var createEditor = function (editorId, $inputSelector) {
+                return RED.editor.createEditor({
+                    id: editorId,
+                    mode: 'ace/mode/javascript',
+                    value: $($inputSelector).val(),
+                    globals: {
+                        msg: false,
+                        context: false,
+                        RED: false,
+                        util: false,
+                        flow: false,
+                        global: false,
+                        console: false,
+                        Buffer: false,
+                        setTimeout: false,
+                        clearTimeout: false,
+                        setInterval: false,
+                        clearInterval: false
+                    }
+                });
+            };
+            var typedInput = function ($selector, $typeSelector, types) {
+                types = types || ['msg', 'str', 'flow', 'global'];
+                $selector = $($selector);
+
+                $selector.typedInput({
+                    types: types,
+                    typeField: $typeSelector
+                });
+            };
+
+            this.editorfilterFn = createEditor('node-input-filterFn-editor', '#node-input-filterFn');
+
+            typedInput('#node-input-opt_text_source', "#node-input-opt_text_source_type", [{
+                value: "all",
+                label: "all",
+                hasValue: false
+            }, 'str', 'msg', 'flow', 'global']);
+            typedInput('#node-input-opt_source_lang', "#node-input-opt_source_lang_type", [{
+                value: "lang",
+                label: "lang",
+                options: ["en", "de"]
+            }, 'msg', 'flow', 'global']);
+            typedInput('#node-input-opt_target_lang', "#node-input-opt_target_lang_type", [{
+                value: "lang",
+                label: "lang",
+                options: ["en", "de"]
+            }, 'msg', 'flow', 'global']);
+
+        },
+        oneditsave: function () {
+            var saveEditor = function (_this, $noErrSelector, $inputSelector, editorKey) {
+                var fnAnnot = _this[editorKey].getSession().getAnnotations();
+                _this[editorKey + '_noerr'] = 0;
+                $($noErrSelector).val(0);
+                for (var k = 0; k < fnAnnot.length; k++) {
+                    if (fnAnnot[k].type === "error") {
+                        $($noErrSelector).val(fnAnnot.length);
+                        _this[editorKey + '_noerr'] = fnAnnot.length;
+                    }
+                }
+                $($inputSelector).val(_this[editorKey].getValue());
+                _this[editorKey].destroy();
+                delete _this[editorKey];
+            };
+
+            saveEditor(this, 'node-input-filterFn-noerr', '#node-input-filterFn', 'editorfilterFn');
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="watson_translator">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+     <div class="form-row">
+        <label for="node-input-watson_config"> Watson Config</label>
+        <input type="text" id="node-input-watson_config">
+    </div>
+
+    <div class="form-row" id="opt_text_source">
+        <label for="node-input-opt_text_source"><i class="icon-tag"></i> text_source </label>
+        <input type="text" id="node-input-opt_text_source" placeholder="text_source">
+        <input type="hidden" id="node-input-opt_text_source_type">
+    </div>      
+      
+    <div class="form-row" id="opt_target_lang">
+        <label for="node-input-opt_target_lang"><i class="icon-tag"></i> opt_target_lang </label>
+        <input type="text" id="node-input-opt_target_lang" placeholder="opt_target_lang">
+        <input type="hidden" id="node-input-opt_target_lang_type">
+    </div>        
+      
+    <div class="form-row" id="opt_source_lang">
+        <label for="node-input-opt_source_lang"><i class="icon-tag"></i> opt_source_lang </label>
+        <input type="text" id="node-input-opt_source_lang" placeholder="opt_source_lang">
+        <input type="hidden" id="node-input-opt_source_lang_type">
+    </div>    
+    
+    
+
+<div id="filterFn">
+    <div class="form-row" >
+        <label for="node-input-edgeFn"><i class="fa fa-tag"></i> filterFn</label>
+        <input type="hidden" id="node-input-filterFn">
+        <input type="hidden" id="node-input-filterFn-noerr">
+    </div>
+
+    <div class="form-row node-text-editor-row" style="position:relative">
+            <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-filterFn-editor" ></div>
+    </div>
+</div>
+
+
+
+
+</script>
+
+<script type="text/x-red" data-help-name="watson_translator">
+
+</script>

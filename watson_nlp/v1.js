@@ -103,10 +103,8 @@ module.exports = function (RED) {
                     filterFn: node.filterFn.toString(),
                     propertySelectFn: node.propertySelectFn.toString(),
                     propertyWriteFn: node.propertyWriteFn.toString(),
-                    content_type: RED.util.evaluateNodeProperty(node.config.content_type, node.config.content_type_type, node, msg),
-                    sentences: RED.util.evaluateNodeProperty(node.config.sentences, node.config.sentences_type, node, msg),
-                    content_language: RED.util.evaluateNodeProperty(node.config.content_language, node.config.content_language_type, node, msg),
-                    accept_language: RED.util.evaluateNodeProperty(node.config.accept_language, node.config.accept_language_type, node, msg)
+                    concept: RED.util.evaluateNodeProperty(node.config.concept, node.config.concept_type, node, msg),
+                    concept_limit: RED.util.evaluateNodeProperty(node.config.concept_limit, node.config.concept_limit_type, node, msg)
                 },
                 result: result
             });
@@ -136,5 +134,4 @@ module.exports = function (RED) {
     }
 
     RED.nodes.registerType("watson_nlp", WatsonNlp);
-}
-;
+};
