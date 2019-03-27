@@ -1,5 +1,5 @@
 var LanguageTranslatorV3 = require('watson-developer-cloud/language-translator/v3');
-var graphlib = require("../lib");
+var graphlib = require("../../lib");
 var _ = require('lodash');
 
 module.exports = function (RED) {

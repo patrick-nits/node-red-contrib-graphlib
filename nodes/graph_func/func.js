@@ -1,4 +1,4 @@
-var graphlib = require("../lib");
+var graphlib = require("../../lib");
 
 module.exports = function (RED) {
     //TODO: more descriptive & flexible structure (contains only lookups)
@@ -107,7 +107,7 @@ module.exports = function (RED) {
         setNodeObj: 'graph'
     };
 
-    FuncNode.prototype.setGraph = require('../lib/func').set_graph;
+    FuncNode.prototype.setGraph = require('../../lib/func').set_graph;
 
     /**
      * Extracts function args for graphlib from message, flow or global.
@@ -258,5 +258,5 @@ module.exports = function (RED) {
     }
 
     // register ui_list node
-    RED.nodes.registerType('graphlib_func', FuncNode);
+    RED.nodes.registerType('graph_func', FuncNode);
 };

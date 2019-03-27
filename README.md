@@ -115,6 +115,157 @@ By using `graphCallbackFns` you can enhance the canvas / `visjs.Network` with ad
 ## Contributing
 Feel free to submit pull requests to further improve functionality and fix issues.
 
+## Test Graph
+
+````json
+{
+  "nodes": [
+    {
+      "id": "A",
+      "text": "This is node A. \nExquisite cordially mr happiness of neglected distrusts. Boisterous impossible unaffected he me everything. Is fine loud deal an rent open give. Find upon and sent spot song son eyes.",
+      "label": "This is the label for node A.",
+      "group": "groupA",
+      "data": {
+        "weigth": 9001,
+        "importance": "much"
+      }
+    },
+    {
+      "id": "B",
+      "text": "This is node B. \nIt’s not my fault",
+      "label": "This is the label for node B.",
+      "group": "groupA",
+      "data": {
+        "weigth": 2,
+        "importance": "less"
+      }
+    },
+    {
+      "id": "C",
+      "text": "This is node C. \nYour focus determines your reality.",
+      "label": "This is the label for node C.",
+      "group": "groupA",
+      "data": {
+        "weigth": 500,
+        "importance": "very"
+      }
+    },
+    {
+      "id": "D",
+      "text": "This is node D. \nDo. Or do not. There is no try.",
+      "label": "This is the label for node D.",
+      "group": "groupB",
+      "data": {
+        "weigth": 42,
+        "importance": "much"
+      }
+    },
+    {
+      "id": "E",
+      "text": "This is node E. \nIt’s a trap!",
+      "label": "This is the label for node E.",
+      "group": "groupC",
+      "data": {
+        "weigth": 23,
+        "importance": "less"
+      }
+    },
+    {
+      "id": "F",
+      "text": "This is node F. \nI find your lack of faith disturbing.",
+      "label": "This is the label for node F.",
+      "group": "groupC",
+      "data": {
+        "weigth": 2,
+        "importance": "very"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "1",
+      "label": "A to C",
+      "text": "Some text for Edge A to C",
+      "data": {
+        "length": "very long"
+      },
+      "from": "A",
+      "to": "C"
+    },
+    {
+      "id": "2",
+      "label": "A to B",
+      "text": "Some text for Edge A to B",
+      "data": {
+        "length": "not so long"
+      },
+      "from": "A",
+      "to": "B"
+    },
+    {
+      "id": "3",
+      "label": "B to A",
+      "text": "Some text for Edge B to A",
+      "data": {
+        "length": "short"
+      },
+      "from": "B",
+      "to": "A"
+    },
+    {
+      "id": "4",
+      "label": "B to C",
+      "text": "Some text for Edge B to C",
+      "data": {
+        "length": "lengthy"
+      },
+      "from": "B",
+      "to": "C"
+    },
+    {
+      "id": "5",
+      "label": "C to B",
+      "text": "Some text for Edge C to B",
+      "data": {
+        "length": "lengthy"
+      },
+      "from": "C",
+      "to": "B"
+    },
+    {
+      "id": "6",
+      "label": "B to D",
+      "text": "Some text for Edge B to D",
+      "data": {
+        "length": "sooo short"
+      },
+      "from": "B",
+      "to": "D"
+    },
+    {
+      "id": "7",
+      "label": "F to E",
+      "text": "Some text for Edge F to E",
+      "data": {
+        "length": "much long"
+      },
+      "from": "F",
+      "to": "E"
+    },
+    {
+      "id": "8",
+      "label": "E to F",
+      "text": "Some text for Edge E to F",
+      "data": {
+        "length": "such long"
+      },
+      "from": "E",
+      "to": "F"
+    }
+  ]
+}
+````
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/patrick-nits/node-red-contrib-graphlib/blob/master/LICENSE) file for details

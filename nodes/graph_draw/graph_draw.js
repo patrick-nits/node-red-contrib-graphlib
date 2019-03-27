@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var graphlib = require("../lib");
+var graphlib = require("../../lib");
 var vis = require("vis");
 
 module.exports = function (RED) {
@@ -22,7 +22,7 @@ module.exports = function (RED) {
         return fs.readFileSync(path.resolve(__dirname, 'network_widget.html'), 'utf8')
     };
 
-    NetworkNode.prototype.setGraph = require('../lib/func').set_graph;
+    NetworkNode.prototype.setGraph = require('../../lib/func').set_graph;
 
     NetworkNode.prototype.buildOptions = function (msg) {
         var node = this;

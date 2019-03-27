@@ -4,7 +4,7 @@
         category: 'graphlib',
         color: 'rgb( 63, 173, 181)',
         defaults: {
-            name: {value: ""},
+            name: {value: "Watson Translator"},
             watson_config: {type: "watson-config", required: true},
             opt_text_source: {value: ""},
             opt_text_source_type: {value: ""},
@@ -33,8 +33,9 @@
         inputs: 1,
         outputs: 1,
         icon: "icon.png",
+        paletteLabel: "Watson Translator",
         label: function () {
-            return this.name || "watson_translator";
+            return this.name || "Watson Translator";
         },
         oneditprepare: function () {
             var createEditor = function (editorId, $inputSelector) {
@@ -149,10 +150,6 @@
             <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-filterFn-editor" ></div>
     </div>
 </div>
-
-
-
-
 </script>
 
 <script type="text/x-red" data-help-name="watson_translator">

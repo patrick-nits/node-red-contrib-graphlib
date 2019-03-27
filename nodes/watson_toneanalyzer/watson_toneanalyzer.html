@@ -1,15 +1,18 @@
 <script type="text/javascript">
-    
-    RED.nodes.registerType('watson_nlp', {
+    RED.nodes.registerType('watson_toneanalyzer', {
         category: 'graphlib',
         color: 'rgb( 63, 173, 181)',
         defaults: {
-            name: {value: ""},
+            name: {value: "Watson Toneanalyzer"},
             watson_config: {type: "watson-config", required: true},
-            opt_concept: {value: ""},
-            opt_concept_type: {value: ""},
-            opt_concept_limit: {value: ""},
-            opt_concept_limit_type: {value: ""},
+            content_type: {value: ""},
+            content_type_type: {value: ""},
+            sentences: {value: ""},
+            sentences_type: {value: ""},
+            content_language: {value: ""},
+            content_language_type: {value: ""},
+            accept_language: {value: ""},
+            accept_language_type: {value: ""},
             filterFn: {
                 value: "/**\n" +
                     "* --- ARGS ---\n" +
@@ -47,7 +50,7 @@
                     "* --- ARGS ---\n" +
                     "* v - the current nodeID to write the tone results to.\n" +
                     "* value - the current node to write the tone results to.\n" +
-                    "* analysis - the nlp analysis by watson.\n" +
+                    "* tones - the tone identified by watson.\n" +
                     "* msg - msg that triggered the function.\n" +
                     "* flow - the current flow. Acces with flow.get('variable_name').\n" +
                     "* global - the global NodeRED storage. Access with global.get('variable_name').\n" +
@@ -56,14 +59,15 @@
                     "//Start code here...\n" +
                     "\n" +
                     "\n" +
-                    "return Object.assign({},value,analysis); "
+                    "return Object.assign({},value,tones); "
             }
         },
         inputs: 1,
         outputs: 1,
+        paletteLabel: "Watson Tone Analyzer",
         icon: "icon.png",
         label: function () {
-            return this.name || "watson_nlp";
+            return this.name || "Watson Toneanalyzer";
         },
         oneditprepare: function () {
             var createEditor = function (editorId, $inputSelector) {
@@ -101,8 +105,22 @@
             this.editorpropertyWriteFn = createEditor('node-input-propertyWriteFn-editor', '#node-input-propertyWriteFn');
             this.editorpropertySelectFn = createEditor('node-input-propertySelectFn-editor', '#node-input-propertySelectFn');
 
-            typedInput('#node-input-opt_concept', "#node-input-opt_concept_type", ['bool','msg', 'flow', 'global']);
-            typedInput('#node-input-opt_concept_limit', "#node-input-opt_concept_limit_type", ['num','msg', 'flow', 'global']);
+            typedInput('#node-input-content_type', "#node-input-content_type_type", [{
+                value: 'content_type',
+                label: 'Type',
+                options: ['application/json', 'text/plain', 'text/html']
+            }, 'msg', 'flow', 'global']);
+            typedInput('#node-input-sentences', "#node-input-sentences_type", ['bool', 'msg', 'flow', 'global']);
+            typedInput('#node-input-content_language', "#node-input-content_language_type", [{
+                value: 'content_language',
+                label: 'Content Language',
+                options: ['en', 'fr']
+            }, 'msg', 'flow', 'global']);
+            typedInput('#node-input-accept_language', "#node-input-accept_language_type", [{
+                value: 'accept_language',
+                label: 'Accept Language',
+                options: ['ar', 'de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pt-br', 'zh-cn', 'zh-tw']
+            }, 'msg', 'flow', 'global']);
 
         },
         oneditsave: function () {
@@ -128,7 +146,7 @@
     });
 </script>
 
-<script type="text/x-red" data-template-name="watson_nlp">
+<script type="text/x-red" data-template-name="watson_toneanalyzer">
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -138,16 +156,28 @@
         <input type="text" id="node-input-watson_config">
     </div>
 
-    <div class="form-row" id="opt_concept">
-        <label for="node-input-opt_concept"><i class="icon-tag"></i> Concept </label>
-        <input type="text" id="node-input-opt_concept" placeholder="concept">
-        <input type="hidden" id="node-input-opt_concept_type">
+    <div class="form-row" id="content_type">
+        <label for="node-input-content_type"><i class="icon-tag"></i> Content Type</label>
+        <input type="text" id="node-input-content_type" placeholder="content_type">
+        <input type="hidden" id="node-input-content_type_type">
+    </div>
+
+    <div class="form-row" id="sentences">
+        <label for="node-input-sentences"><i class="icon-tag"></i> sentences</label>
+        <input type="text" id="node-input-sentences" placeholder="sentences">
+        <input type="hidden" id="node-input-sentences_type">
+    </div>
+
+    <div class="form-row" id="content_language">
+        <label for="node-input-content_language"><i class="icon-tag"></i> content_language</label>
+        <input type="text" id="node-input-content_language" placeholder="content_language">
+        <input type="hidden" id="node-input-content_language_type">
     </div>    
     
-    <div class="form-row" id="opt_concept_limit">
-        <label for="node-input-opt_concept_limit"><i class="icon-tag"></i> Concept Limit</label>
-        <input type="text" id="node-input-opt_concept_limit" placeholder="concept_limit">
-        <input type="hidden" id="node-input-opt_concept_limit_type">
+    <div class="form-row" id="accept_language">
+        <label for="node-input-accept_language"><i class="icon-tag"></i> accept_language</label>
+        <input type="text" id="node-input-accept_language" placeholder="accept_language">
+        <input type="hidden" id="node-input-accept_language_type">
     </div>
 
 <div id="filterFn">
@@ -189,6 +219,6 @@
 
 </script>
 
-<script type="text/x-red" data-help-name="watson_nlp">
+<script type="text/x-red" data-help-name="watson_toneanalyzer">
 
 </script>

@@ -1,4 +1,4 @@
-var graphlib = require("../lib");
+var graphlib = require("../../lib");
 
 module.exports = function (RED) {
 
@@ -120,5 +120,5 @@ module.exports = function (RED) {
         });
     }
 
-    RED.nodes.registerType('graphlib_create', GraphNode);
+    RED.nodes.registerType('graph_create', GraphNode);
 };

@@ -6,7 +6,7 @@
             // belonging dashboard group
             draw_config: {type: "draw-config", required: true},
             group: {type: 'ui_group', required:true},
-            name: {value: 'Graphlib draw'},
+            name: {value: 'Draw Graph'},
             order: {value: 0},
             width: {value: 12},
             height: {value: 12},
@@ -17,7 +17,7 @@
         inputs:1,
         outputs:1,
         icon: "icon.png",
-        paletteLabel: "Graphlib Draw",
+        paletteLabel: "Draw Graph",
         label: function() { return this.name || "Graphlib draw"; },
         oneditprepare: function() {
             $("#node-input-size").elementSizer({
