@@ -122,7 +122,7 @@ Feel free to submit pull requests to further improve functionality and fix issue
   "nodes": [
     {
       "id": "A",
-      "text": "This is node A. \nExquisite cordially mr happiness of neglected distrusts. Boisterous impossible unaffected he me everything. Is fine loud deal an rent open give. Find upon and sent spot song son eyes.",
+      "text": "This is node A. \nNow, young Skywalker, you will die.",
       "label": "This is the label for node A.",
       "group": "groupA",
       "data": {
