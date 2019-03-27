@@ -23,55 +23,55 @@
 
 <script type="text/x-red" data-template-name="graph-config">
 <div class="form-row">
-    <label for="node-config-input-name"> Name</label>
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-config-input-name" placeholder="Name">
 </div>
 <div class="form-row">
     <label for="node-config-input-flush">&nbsp;</label>
     <input type="checkbox" id="node-config-input-flush" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Create new graph and flush cache?</span>
+    <span><i class="fa fa-trash"></i> Create new graph and flush cache?</span>
 </div>
 <div class="form-row">
     <label for="node-config-input-directed">&nbsp;</label>
     <input type="checkbox" id="node-config-input-directed" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Directed graph?</span>
+    <span><i class="fa fa-arrow-right"></i> Directed graph?</span>
 </div>
 <div class="form-row">
     <label for="node-config-input-multigraph">&nbsp;</label>
     <input type="checkbox" id="node-config-input-multigraph" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Multigraph?</span>
+    <span><i class="fa fa-arrows-h"></i> Multigraph?</span>
 </div>
 <div class="form-row">
     <label for="node-config-input-compound">&nbsp;</label>
     <input type="checkbox" id="node-config-input-compound" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Compound graph?</span>
+    <span><i class="fa fa-object-group"></i> Compound graph?</span>
 </div>
 <div class="form-row">
-    <label for="node-config-input-node-node_arr_key"> Node Array key </label>
+    <label for="node-config-input-node-node_arr_key"> <i class="fa fa-cog"></i> Node Array key </label>
     <input type="text" id="node-config-input-node_arr_key" placeholder="node_arr_key">
 </div>
 <div class="form-row">
-    <label for="node-config-input-node-edge_arr_key"> Edge Array key </label>
+    <label for="node-config-input-node-edge_arr_key"> <i class="fa fa-cog"></i> Edge Array key </label>
     <input type="text" id="node-config-input-edge_arr_key" placeholder="edge_arr_key">
 </div>
 <div class="form-row">
-    <label for="node-config-input-node_id_key"> Node ID key </label>
+    <label for="node-config-input-node_id_key"> <i class="fa fa-cog"></i> Node ID key </label>
     <input type="text" id="node-config-input-node_id_key" placeholder="node_id_key">
 </div>
 <div class="form-row">
-    <label for="node-config-input-edge_from_key"> Edge FROM key</label>
+    <label for="node-config-input-edge_from_key"> <i class="fa fa-cog"></i> Edge FROM key</label>
     <input type="text" id="node-config-input-edge_from_key" placeholder="edge_from_key">
 </div>
 <div class="form-row">
-    <label for="node-config-input-edge_to_key"> Edge TO key</label>
+    <label for="node-config-input-edge_to_key"> <i class="fa fa-cog"></i> Edge TO key</label>
     <input type="text" id="node-config-input-edge_to_key" placeholder="edge_to_key">
 </div>
 <div class="form-row">
-    <label for="node-config-input-edge_label_key"> Edge LABEL key</label>
+    <label for="node-config-input-edge_label_key"> <i class="fa fa-cog"></i> Edge LABEL key</label>
     <input type="text" id="node-config-input-edge_label_key" placeholder="edge_label_key">
 </div>
 <div class="form-row">
-    <label for="node-config-input-edge_id_key"> Edge ID key</label>
+    <label for="node-config-input-edge_id_key"> <i class="fa fa-cog"></i> Edge ID key</label>
     <input type="text" id="node-config-input-edge_id_key" placeholder="edge_id_key">
 </div>
 
@@ -79,7 +79,6 @@
 
 <script type="text/x-red" data-help-name="graph-config">
 <p>Graphlib graph create</p>
-
 <h3>Configuration</h3>
 <ol class="node-ports">
     <li> Flush
@@ -162,16 +161,6 @@
             <dt>edge_id_key <span class="property-type">string | default: undefined  </span></dt>
             <dd> Graphlib needs to know which property of your edges is the id. The id must be unique. Leave empty for auto generated, unique ids.
             </dd>
-        </dl>
-    </li>
-</ol>
-
-<h3>Input</h3>
-<ol class="node-ports">
-    <li> default
-        <dl class="message-properties">
-            <dt>msg.payload.graph <span class="property-type">JSON | obj</span></dt>
-            <dd>JSON or Object representation of the graph. If empty, new graph will be created.</dd>
         </dl>
     </li>
 </ol>

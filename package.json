@@ -13,10 +13,10 @@
   ],
   "node-red": {
     "nodes": {
-      "graph_create": "nodes/create/create.js",
-      "graph_func": "nodes/func/func.js",
-      "graphlib_render": "nodes/render/ui_network.js",
-      "watson_nlp": "nodes/watson_nlp/v1.js",
+      "graph_create": "nodes/graph_create/create.js",
+      "graph_func": "nodes/graph_func/func.js",
+      "graph_draw": "nodes/graph_draw/graph_draw.js",
+      "watson_nlp": "nodes/watson_nlp/watson_nlp.js",
       "watson_toneanalyzer": "nodes/watson_toneanalyzer/watson_toneanalyzer.js",
       "watson_translator": "nodes/watson_translator/watson_translator.js"
     }

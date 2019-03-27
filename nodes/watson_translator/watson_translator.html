@@ -115,7 +115,7 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
      <div class="form-row">
-        <label for="node-input-watson_config"> Watson Config</label>
+        <label for="node-input-watson_config"><i class="fa fa-cogs"></i> Watson Config</label>
         <input type="text" id="node-input-watson_config">
     </div>
 
@@ -153,5 +153,66 @@
 </script>
 
 <script type="text/x-red" data-help-name="watson_translator">
-
+<h3>Configuration</h3>
+<p>For more details, see watson translator documentation.</p>
+<ol class="node-ports">
+    <li> Watson Config
+        <dl class="message-properties">
+            <dt>watson_config <span class="property-type">obj</span></dt>
+            <dd>
+            Holds the API key and address of the NLP service.
+            </dd>
+        </dl>
+    </li>
+    <li> text_source
+        <dl class="message-properties">
+            <dt>text_source <span class="property-type">obj | str | msg | flow | global </span></dt>
+            <dd>
+            Define the property of the node which should be used to select the text to be analyzed. If you select `all`, all of the nodes properties will be used.
+            </dd>
+        </dl>
+    </li>
+    <li> Source language
+        <dl class="message-properties">
+            <dt>opt_source_lang <span class="property-type">en | de  </span></dt>
+            <dd>
+            Defines the source language to be translated from.
+            </dd>
+        </dl>
+    </li>
+    <li> Target language
+        <dl class="message-properties">
+            <dt>opt_target_lang <span class="property-type">en | de  </span></dt>
+            <dd>
+            Defines the target language to be translated to.
+            </dd>
+        </dl>
+    </li>
+    <li> filterFn
+        <dl class="message-properties">
+            <dt>filterFn <span class="property-type">Function</span></dt>
+            <dd>
+             A callback function that is required in some functions. If the function returns true, the current node is selected, otherwise not.
+            </dd>
+        </dl>
+    </li>
+</ol>
+<h3>Input</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>msg <span class="property-type">obj</span></dt>
+            <dd>The property msg.graph must contain the graph to be worked with. Otherwise, the message can be used to dynamically define parameters for the available functions.</dd>
+        </dl>
+    </li>
+</ol>
+<h3>Output</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>msg <span class="property-type">obj</span></dt>
+            <dd>original message with the return value of the called function in msg.payload. The graph will be updated and is stored in msg.graph</dd>
+        </dl>
+    </li>
+</ol>
 </script>

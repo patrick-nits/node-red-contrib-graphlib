@@ -32,33 +32,49 @@
 <script type="text/x-red" data-template-name="watson-config">
 
     <div class="form-row">
-        <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-config-input-name" placeholder="Name">
     </div>
 
     <div class="form-row">
-        <label><span> Type</span></label>
+        <label><span><i class="fa fa-cog"></i> Type</span></label>
         <select id="node-config-input-service" style="width:70%">
             <option value="tone_analyzer"> tone_analyzer</option>
+            <option value="nlp"> nlp</option>
+            <option value="translator"> translator</option>
         </select>
     </div>
 
     <div class="form-row" id="iam_apikey">
-        <label for="node-config-input-iam_apikey"><i class="icon-tag"></i> iam_apikey</label>
+        <label for="node-config-input-iam_apikey"><i class="fa fa-key"></i> iam_apikey</label>
         <input type="text" id="node-config-input-iam_apikey" placeholder="iam_apikey">
     </div>
 
     <div class="form-row" id="url">
-        <label for="node-config-input-url"><i class="icon-tag"></i> url</label>
+        <label for="node-config-input-url"><i class="fa fa-link"></i> url</label>
         <input type="text" id="node-config-input-url" placeholder="url">
     </div>
-
-
-
-
-
 </script>
 
 <script type="text/x-red" data-help-name="watson-config">
 
+<h3>Configuration</h3>
+<ol class="node-ports">
+    <li> Iam Api Key
+        <dl class="message-properties">
+            <dt>iam_apikey <span class="property-type">str</span></dt>
+            <dd>
+            Watson API Key for the selected service.
+            </dd>
+        </dl>
+    </li>
+    <li> URL
+        <dl class="message-properties">
+            <dt>Url <span class="property-type">str</span></dt>
+            <dd>
+            API address of the service.
+            </dd>
+        </dl>
+    </li>
+</ol>
 </script>

@@ -20,25 +20,27 @@
 
 <script type="text/x-red" data-template-name="graph_create">
 <div class="form-row">
-    <label for="node-input-name"> Name</label>
+    <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
     <input type="text" id="node-input-name" placeholder="Name">
 </div>
  <div class="form-row">
-        <label for="node-input-graph_config"> Graph Config</label>
-         <input type="text" id="node-input-graph_config">
+        <label for="node-input-graph_config"><i class="fa fa-cogs"></i> Config</label>
+        <input type="text" id="node-input-graph_config">
     </div>
 </div>
     <div class="form-row">
         <label for="node-input-json_output">&nbsp;</label>
         <input type="checkbox" id="node-input-json_output" style="display:inline-block; width:15px; vertical-align:baseline;">
-        <span>JSON output?</span>
+        <span><i class="fa fa-code"></i> JSON output?</span>
     </div>
 </script>
 
 
 
 <script type="text/x-red" data-help-name="graph_create">
-<p>Graphlib graph create</p>
+<h3>Create Graph Node</h3>
+<p>This node creates a graph, using <a href="https://github.com/dagrejs/graphlib">dagrejs/graphlib</a>, based on the input message.
+    The graph should be in the form of a node and edge list. Configuration via <span class="property-type">graph_config</span>.</p>
 
 <h3>Configuration</h3>
 <ol class="node-ports">

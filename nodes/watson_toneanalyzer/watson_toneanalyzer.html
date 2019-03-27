@@ -152,7 +152,7 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
      <div class="form-row">
-        <label for="node-input-watson_config"> Watson Config</label>
+        <label for="node-input-watson_config"><i class="fa fa-cogs"></i> Watson Config</label>
         <input type="text" id="node-input-watson_config">
     </div>
 
@@ -220,5 +220,90 @@
 </script>
 
 <script type="text/x-red" data-help-name="watson_toneanalyzer">
-
+<h3>Configuration</h3>
+<p>For more details, see watson toneanalyzer documentation.</p>
+<ol class="node-ports">
+    <li> Watson Config
+        <dl class="message-properties">
+            <dt>watson_config <span class="property-type">obj</span></dt>
+            <dd>
+            Holds the API key and address of the NLP service.
+            </dd>
+        </dl>
+    </li>
+    <li> Content Type
+        <dl class="message-properties">
+            <dt>content_type <span class="property-type">json | html | text</span></dt>
+            <dd>
+            The content type to be analyzed.
+            </dd>
+        </dl>
+    </li>
+    <li> Sentences
+        <dl class="message-properties">
+            <dt>concept_limit <span class="property-type"> true | false </span></dt>
+            <dd>
+            Does the content contain sentences.
+            </dd>
+        </dl>
+    </li>
+        <li>Content Language
+        <dl class="message-properties">
+            <dt>content_language <span class="property-type">en | de  </span></dt>
+            <dd>
+            The language of the content.
+            </dd>
+        </dl>
+    </li>
+    <li> Accept Language
+        <dl class="message-properties">
+            <dt>accept_language <span class="property-type">en | de  </span></dt>
+            <dd>
+            The accepted language of the content.
+            </dd>
+        </dl>
+    </li>
+    <li> filterFn
+        <dl class="message-properties">
+            <dt>filterFn <span class="property-type">Function</span></dt>
+            <dd>
+             A callback function that is required in some functions. If the function returns true, the current node is selected, otherwise not.
+            </dd>
+        </dl>
+    </li>
+    <li> propertySelectFn
+        <dl class="message-properties">
+            <dt>propertySelectFn <span class="property-type">Function</span></dt>
+            <dd>
+            With this function you can customise which properties of the node are analysed. Details in the function-input.
+            </dd>
+        </dl>
+    </li>
+    <li> propertyWriteFn
+        <dl class="message-properties">
+            <dt>propertyWriteFn <span class="property-type">Function</span></dt>
+            <dd>
+             With this function you can customise how the result will be added to the node.
+            </dd>
+        </dl>
+    </li>
+</ol>
+<h3>Input</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>msg <span class="property-type">obj</span></dt>
+            <dd>The property msg.graph must contain the graph to be worked with. Otherwise, the message can be used to dynamically define parameters for the available functions.</dd>
+        </dl>
+    </li>
+</ol>
+<h3>Output</h3>
+<ol class="node-ports">
+    <li> default
+        <dl class="message-properties">
+            <dt>msg <span class="property-type">obj</span></dt>
+            <dd>original message with the return value of the called function in msg.payload. The graph will be updated and is stored in msg.graph</dd>
+        </dl>
+    </li>
+</ol>
 </script>

@@ -269,33 +269,33 @@
 </div>
 
 <div class="form-row" id="arg_value" style="display:none;">
-    <label for="node-input-arg_value"><i class="fa fa-tag"></i> Value</label>
+    <label for="node-input-arg_value"><i class="fa fa-cog"></i> Value</label>
     <input type="text" id="node-input-arg_value" style="width: 70%">
     <input type="hidden" id="node-input-arg_value_type">
 </div>
 
 <div class="form-row" id="arg_v" style="display:none;">
-    <label for="node-input-arg_v"><i class="fa fa-tag"></i> Node V</label>
+    <label for="node-input-arg_v"><i class="fa fa-cog"></i> Node V</label>
     <input type="text" id="node-input-arg_v"  style="width: 70%">
         <input type="hidden" id="node-input-arg_v_type">
 
 </div>
 
 <div class="form-row" id="arg_w" style="display:none;">
-    <label for="node-input-arg_w"><i class="fa fa-tag"></i> Node W</label>
+    <label for="node-input-arg_w"><i class="fa fa-cog"></i> Node W</label>
     <input type="text" id="node-input-arg_w" style="width: 70%">
         <input type="hidden" id="node-input-arg_w_type">
 </div>
 
 <div class="form-row" id="arg_nodeObjs" style="display:none;">
-    <label for="node-input-arg_nodeObjs"><i class="fa fa-tag"></i> NodeObjs to update or set</label>
+    <label for="node-input-arg_nodeObjs"><i class="fa fa-cog"></i> NodeObjs to update or set</label>
     <input type="text" id="node-input-arg_nodeObjs" style="width: 70%">
         <input type="hidden" id="node-input-arg_nodeObjs_type">
 </div>
 
 
 <div class="form-row" id="arg_label" style="display:none;">
-    <label for="node-input-arg_label"><i class="fa fa-tag"></i> Label</label>
+    <label for="node-input-arg_label"><i class="fa fa-cog"></i> Label</label>
     <input type="text" id="node-input-arg_label" style="width: 70%">
         <input type="hidden" id="node-input-arg_label_type">
 
@@ -303,7 +303,7 @@
 
 <div id="weightFn" style="display:none;">
     <div class="form-row" >
-        <label for="node-input-weightFn"><i class="fa fa-tag"></i> weightFn</label>
+        <label for="node-input-weightFn"><i class="fa fa-code"></i> weightFn</label>
          <input type="hidden" id="node-input-weightFn">
          <input type="hidden" id="node-input-weightFn-noerr">
     </div>
@@ -315,7 +315,7 @@
 
 <div id="edgeFn" style="display:none;">
 <div class="form-row" >
-    <label for="node-input-edgeFn"><i class="fa fa-tag"></i> edgeFn</label>
+    <label for="node-input-edgeFn"><i class="fa fa-code"></i> edgeFn</label>
     <input type="hidden" id="node-input-edgeFn">
     <input type="hidden" id="node-input-edgeFn-noerr">
 </div>
@@ -327,7 +327,7 @@
 
 <div id="filterFn" style="display:none;">
     <div class="form-row" >
-        <label for="node-input-edgeFn"><i class="fa fa-tag"></i> filterFn</label>
+        <label for="node-input-edgeFn"><i class="fa fa-code"></i> filterFn</label>
         <input type="hidden" id="node-input-filterFn">
         <input type="hidden" id="node-input-filterFn-noerr">
     </div>
@@ -339,7 +339,7 @@
 
 <div id="changeFn" style="display:none;">
     <div class="form-row" >
-        <label for="node-input-edgeFn"><i class="fa fa-tag"></i> changeFn</label>
+        <label for="node-input-edgeFn"><i class="fa fa-code"></i> changeFn</label>
         <input type="hidden" id="node-input-changeFn">
         <input type="hidden" id="node-input-changeFn-noerr">
     </div>
@@ -356,18 +356,61 @@
 <script type="text/x-red" data-help-name="graph_func">
 <h3>Configuration</h3>
 <ol class="node-ports">
-    <li> Graph Config
+    <li> Function
         <dl class="message-properties">
-            <dt>graph_config <span class="property-type">obj</span></dt>
-            <dd>Defines graph structure.</dd>
+            <dt>unction <span class="property-type">obj</span></dt>
+            <dd>
+            Defines the function to apply to the graph in <span class="property-type">msg.graph</span>. </br>
+            Will show additional fields according to selected function. </br>
+            For a list of available functions and algorithms see <a href="https://github.com/dagrejs/graphlib">dagrejs/graphlib</a>
+            </dd>
         </dl>
     </li>
-    <li> JSON output
+    <li> Node V
         <dl class="message-properties">
-            <dt>json_output <span class="property-type">true | false </span></dt>
-            <dd>Set to true if you want to serialize the output into JSON. If you plan to use nodes from the graphlib
-                package, use false. IF you need the JSON, use true.
-                Default false.
+            <dt>Node V <span class="property-type">str | msg | flow | global</span></dt>
+            <dd>
+            The ID of a node.
+            </dd>
+        </dl>
+    </li>
+    <li> Node W
+        <dl class="message-properties">
+            <dt>Node W <span class="property-type">str | msg | flow | global</span></dt>
+            <dd>
+            The ID of a node.
+            </dd>
+        </dl>
+    </li>
+    <li> Node Label
+        <dl class="message-properties">
+            <dt>Node Label <span class="property-type">obj | msg | flow | global</span></dt>
+            <dd>
+            The label to be assigned to Node V.
+            </dd>
+        </dl>
+    </li>
+    <li> Edge FN
+        <dl class="message-properties">
+            <dt>EdgeFn <span class="property-type">obj | msg | flow | global</span></dt>
+            <dd>
+            A callback function that is required in some functions. Details are provided in the input-editor.
+            </dd>
+        </dl>
+    </li>
+    <li> Weight FN
+        <dl class="message-properties">
+            <dt>WeightFn <span class="property-type">obj | msg | flow | global</span></dt>
+            <dd>
+            A callback function that is required in some functions. Details are provided in the input-editor.
+            </dd>
+        </dl>
+    </li>
+    <li> Filter FN
+        <dl class="message-properties">
+            <dt>FilterFn <span class="property-type">obj | msg | flow | global</span></dt>
+            <dd>
+            A callback function that is required in some functions. If the function returns true, the current node is selected, otherwise not.
             </dd>
         </dl>
     </li>
@@ -377,8 +420,8 @@
 <ol class="node-ports">
     <li> default
         <dl class="message-properties">
-            <dt>msg.payload.graph <span class="property-type">JSON | obj</span></dt>
-            <dd>JSON or Object representation of the graph. If empty, new graph will be created.</dd>
+            <dt>msg <span class="property-type">obj</span></dt>
+            <dd>The property msg.graph must contain the graph to be worked with. Otherwise, the message can be used to dynamically define parameters for the available functions.</dd>
         </dl>
     </li>
 </ol>
@@ -387,12 +430,10 @@
 <ol class="node-ports">
     <li> default
         <dl class="message-properties">
-            <dt>payload <span class="property-type">Graphlib graph object</span></dt>
-            <dd>original message with graph in msg.payload.graph. Replaces existing graph.</dd>
+            <dt>msg <span class="property-type">obj</span></dt>
+            <dd>original message with the return value of the called function in msg.payload. The graph will be updated and is stored in msg.graph</dd>
         </dl>
     </li>
 </ol>
-
-
 
 </script>
