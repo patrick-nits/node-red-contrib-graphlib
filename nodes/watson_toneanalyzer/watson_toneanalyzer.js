@@ -72,7 +72,7 @@ module.exports = function (RED) {
                         }
                     });
             });
-        })).then(function (data) {
+        })).then(function (data) { // Todo: add delay
             var result = _.map(data, function (d) {
                 msg.graph.setNode(d.v, node.propertyWriteFn(d.v, d.value, d.tones));
                 return msg.graph.node(d.v);

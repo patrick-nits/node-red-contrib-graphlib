@@ -105,8 +105,11 @@ module.exports = function (RED) {
                             }
                         });
                 }).then(function (translation) {
+                    // Todo: Translation Selector
+                    // todo add delay
                     msg.graph.setNode(v.v, _.setWith(v, key.split('.'), translation.translations[0].translation));
                 }).catch(function (err) {
+                    // Todo: incorporate retry & delay // handle missing translation
                     throw err;
                 });
             }));

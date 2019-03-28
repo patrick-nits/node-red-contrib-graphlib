@@ -62,41 +62,50 @@ module.exports = function (RED) {
             }
             return result;
         };
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
         var requestNbr = 0;
         var nodes = _.map(msg.graph.selectNodeObjs(node.filterFn), function (v) {
             return v
         });
         var totalRequests = nodes.length;
+        var accData = [];
         dragScope(msg.graph);
-        Promise.all(_.map(nodes, function (v) {
-            return new Promise(function resolver(resolve, reject) {
-                node.nlpProcessor.analyze(Object.assign({}, node.config.nlp_params, {text: node.propertySelectFn(v.v, v, msg, node.context().flow, node.context().global)}),
-                    function (error, analysis) {
-                        requestNbr = requestNbr + 1;
-                        node.status({
-                            fill: "blue",
-                            shape: "ring",
-                            text: "Request: " + requestNbr + " of " + totalRequests
-                        });
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve({
-                                v: v.v,
-                                value: v,
-                                analysis: analysis
-                            })
-                        }
-                    });
+        node.status({fill: "blue", shape: "ring", text: "Requesting..."});
+        _.reduce(nodes, function (previousPromise, v) {
+            return previousPromise.then(delay(10)).then(function () {
+                return new Promise(function (resolve, reject) {
+                    node.nlpProcessor.analyze(Object.assign({}, node.config.nlp_params, {text: node.propertySelectFn(v.v, v, msg, node.context().flow, node.context().global)}),
+                        function (error, analysis) {
+                            requestNbr = requestNbr + 1;
+                            node.status({
+                                fill: "blue",
+                                shape: "ring",
+                                text: "Request: " + requestNbr + " of " + totalRequests
+                            });
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve({
+                                    v: v.v,
+                                    value: v,
+                                    analysis: analysis
+                                })
+                            }
+                        })
+                }).then(function (data) {
+                    requestNbr = requestNbr + 1;
+                    node.status({fill: "blue", shape: "ring", text: "Request: " + requestNbr});
+                    msg.graph.setNode(data.v, node.propertyWriteFn(data.v, data.value, data.analysis));
+                    accData.push(data);
+                }).catch(function (err) {
+                    node.status({fill: "red", shape: "ring", text: "Error in Request "+ requestNbr + "but continuing."});
+                    console.log(err);
+                });
             });
-        })).then(function (data) {
-            var result = _.map(data, function (d) {
-                msg.graph.setNode(d.v, node.propertyWriteFn(d.v, d.value, d.analysis));
-                return msg.graph.node(d.v);
-            });
+        }, Promise.resolve()).then(function () {
             node.status({});
             cleanScope({}, msg.graph);
-            msg.payload = result;
+            msg.payload = accData;
             msg.graph_func_stack = node.buildFuncStack(msg, {
                 func: 'watson-toneanalyzer-2018-09-21',
                 params: {
@@ -106,12 +115,8 @@ module.exports = function (RED) {
                     concept: RED.util.evaluateNodeProperty(node.config.concept, node.config.concept_type, node, msg),
                     concept_limit: RED.util.evaluateNodeProperty(node.config.concept_limit, node.config.concept_limit_type, node, msg)
                 },
-                result: result
+                result: accData
             });
-            node.send(msg);
-        }).catch(function (err) {
-            node.status({});
-            console.log(err);
             node.send(msg);
         });
     };
