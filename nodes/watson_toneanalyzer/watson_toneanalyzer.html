@@ -13,6 +13,7 @@
             content_language_type: {value: ""},
             accept_language: {value: ""},
             accept_language_type: {value: ""},
+            concurrency: {value: 3},
             filterFn: {
                 value: "/**\n" +
                     "* --- ARGS ---\n" +
@@ -154,6 +155,11 @@
      <div class="form-row">
         <label for="node-input-watson_config"><i class="fa fa-cogs"></i> Watson Config</label>
         <input type="text" id="node-input-watson_config">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-concurrency"><i class="fa fa-cogs"></i> Concurrency</label>
+        <input type="number" id="node-input-concurrency">
     </div>
 
     <div class="form-row" id="content_type">

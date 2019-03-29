@@ -1,6 +1,7 @@
 var LanguageTranslatorV3 = require('watson-developer-cloud/language-translator/v3');
 var graphlib = require("../../lib");
 var _ = require('lodash');
+var pLimit = require('p-limit');
 
 module.exports = function (RED) {
 
@@ -83,49 +84,89 @@ module.exports = function (RED) {
         var nodes = _.map(msg.graph.selectNodeObjs(node.filterFn), function (v) {
             return v
         });
+        var requestNbr = 0;
+        var totalRequests = nodes.length;
+        var limit = pLimit(node.config.concurrency);
+        var analyzed_nodes = [];
         dragScope(msg.graph);
         Promise.all(_.map(nodes, function (v) {
             var keys = [];
-
             if (node.config.opt_text_source_type === 'all') {
                 //gather all keys
                 keys = getKeys(v)
             } else {
                 keys = (RED.util.evaluateNodeProperty(node.config.opt_text_source, node.config.opt_text_source_type, node, msg) || "").split(',');
             }
-
+            totalRequests += keys.length - 1;
             return Promise.all(_.map(keys, function (key) {
-                return new Promise(function resolver(resolve, reject) {
-                    node.translator.translate(Object.assign({}, node.config.translate_params, {text: _.get(v, key.split('.'))}),
-                        function (error, translation) {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(translation);
+                if (_.get(v, key.split('.'))) {
+                    return limit(function (v, key) {
+                        return new Promise(function resolver(resolve, reject) {
+                            node.translator.translate(Object.assign({}, node.config.translate_params, {text: _.get(v, key.split('.'))}),
+                                function (error, translation) {
+                                    node.status({
+                                        fill: "blue",
+                                        shape: "ring",
+                                        text: "Request: " + requestNbr++ + " of " + totalRequests
+                                    });
+                                    if (error) {
+                                        reject(error);
+                                    } else {
+                                        resolve({
+                                            v: v.v,
+                                            value: v,
+                                            analysis: translation
+                                        });
+                                    }
+                                });
+                        }).then(function (data) {
+                            try {
+                                msg.graph.setNode(v.v, _.setWith(v, key.split('.'), data.analysis.translations[0].translation));
+                            } catch (e) {
+                                console.log("No Translation for node: " + v.v + "with key: " + key);
                             }
+                        }).catch(function (error) {
+                            console.log(error);
                         });
-                }).then(function (translation) {
-                    // Todo: Translation Selector
-                    // todo add delay
-                    msg.graph.setNode(v.v, _.setWith(v, key.split('.'), translation.translations[0].translation));
-                }).catch(function (err) {
-                    // Todo: incorporate retry & delay // handle missing translation
-                    throw err;
-                });
-            }));
-
+                    }, v, key);
+                } else {
+                    return Promise.resolve()
+                }
+            })).then(function () {
+                analyzed_nodes.push(msg.graph.setNodeObj(v));
+            }).catch(function (error) {
+                console.log(error);
+                analyzed_nodes.push(msg.graph.setNodeObj(v));
+            });
         })).then(function (data) {
-            node.status({});
-            msg.payload = msg.graph.selectNodeObjs(node.filterFn);
             msg.graph_func_stack = node.buildFuncStack(msg, {
-                func: 'watson-translatorv3-2018-05-01',
+                func: 'watson-translator-2018-09-21',
+                params: {
+                    filterFn: node.filterFn.toString(),
+                    propertySelectFn: node.propertySelectFn.toString(),
+                    propertyWriteFn: node.propertyWriteFn.toString(),
+                    concept: RED.util.evaluateNodeProperty(node.config.concept, node.config.concept_type, node, msg),
+                    concept_limit: RED.util.evaluateNodeProperty(node.config.concept_limit, node.config.concept_limit_type, node, msg)
+                },
+                result: analyzed_nodes
+            });
+            cleanScope({}, msg.graph);
+            msg.payload = analyzed_nodes;
+            node.status({});
+            node.send(msg);
+        }).catch(function (error) {
+            msg.graph_func_stack = node.buildFuncStack(msg, {
+                func: 'watson-nlp-2018-09-21',
                 params: {
                     filterFn: node.filterFn.toString(),
                     opt_text_source_type: node.config.opt_text_source_type,
                     opt_text_source: (RED.util.evaluateNodeProperty(node.config.opt_text_source, node.config.opt_text_source_type, node, msg) || "").split(',')
-                }
+                },
+                result: error
             });
             cleanScope({}, msg.graph);
+            msg.payload = analyzed_nodes;
+            node.status({});
             node.send(msg);
         });
     };

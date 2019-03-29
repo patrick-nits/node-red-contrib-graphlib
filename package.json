@@ -6,7 +6,6 @@
     "@dagrejs/graphlib": "^2.1.4",
     "lodash": "^4.17.11",
     "p-limit": "^2.2.0",
-    "p-queue": "^4.0.0",
     "vis": "^4.21.0",
     "watson-developer-cloud": "^3.18.3"
   },

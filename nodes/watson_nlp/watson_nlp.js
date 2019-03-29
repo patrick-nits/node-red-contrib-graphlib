@@ -1,6 +1,7 @@
 var NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 var graphlib = require("../../lib");
 var _ = require('lodash');
+var pLimit = require('p-limit');
 
 module.exports = function (RED) {
 
@@ -44,7 +45,6 @@ module.exports = function (RED) {
 
     WatsonNlp.prototype.analyze = function (msg) {
         var node = this;
-        node.status({fill: "blue", shape: "ring", text: "requesting..."});
         var dragScope = function (scope) {
             scope.msg = msg;
             scope.flow = node.context().flow;
@@ -62,25 +62,23 @@ module.exports = function (RED) {
             }
             return result;
         };
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-        var requestNbr = 0;
         var nodes = _.map(msg.graph.selectNodeObjs(node.filterFn), function (v) {
             return v
-        });
+        }) || [];
+        var requestNbr = 0;
         var totalRequests = nodes.length;
-        var accData = [];
+        var limit = pLimit(node.config.concurrency);
+        var analyzed_nodes = [];
+        node.status({fill: "blue", shape: "ring", text: "requesting..."});
         dragScope(msg.graph);
-        node.status({fill: "blue", shape: "ring", text: "Requesting..."});
-        _.reduce(nodes, function (previousPromise, v) {
-            return previousPromise.then(delay(10)).then(function () {
-                return new Promise(function (resolve, reject) {
-                    node.nlpProcessor.analyze(Object.assign({}, node.config.nlp_params, {text: node.propertySelectFn(v.v, v, msg, node.context().flow, node.context().global)}),
-                        function (error, analysis) {
-                            requestNbr = requestNbr + 1;
+        Promise.all(_.map(nodes, function (v) {
+                return limit(function (v) {
+                    return new Promise(function (resolve, reject) {
+                        node.nlpProcessor.analyze(Object.assign({}, node.config.nlp_params, {text: node.propertySelectFn(v.v, v, msg, node.context().flow, node.context().global)}), function (error, analysis) {
                             node.status({
                                 fill: "blue",
                                 shape: "ring",
-                                text: "Request: " + requestNbr + " of " + totalRequests
+                                text: "Request: " + requestNbr++ + " of " + totalRequests
                             });
                             if (error) {
                                 reject(error);
@@ -89,25 +87,25 @@ module.exports = function (RED) {
                                     v: v.v,
                                     value: v,
                                     analysis: analysis
-                                })
+                                });
                             }
-                        })
-                }).then(function (data) {
-                    requestNbr = requestNbr + 1;
-                    node.status({fill: "blue", shape: "ring", text: "Request: " + requestNbr});
-                    msg.graph.setNode(data.v, node.propertyWriteFn(data.v, data.value, data.analysis));
-                    accData.push(data);
-                }).catch(function (err) {
-                    node.status({fill: "red", shape: "ring", text: "Error in Request "+ requestNbr + "but continuing."});
-                    console.log(err);
-                });
-            });
-        }, Promise.resolve()).then(function () {
-            node.status({});
-            cleanScope({}, msg.graph);
-            msg.payload = accData;
+                        });
+                    }).then(function (data) {
+                        var new_value  = node.propertyWriteFn(data.v, data.value, data.analysis);
+                        msg.graph.setNode(data.v, new_value);
+                        analyzed_nodes.push(new_value);
+                    }).catch(function (error) {
+                        node.status({
+                            fill: "red",
+                            shape: "ring",
+                            text: "Error in Request: " + requestNbr + " of " + totalRequests + "... Continuing."
+                        });
+                        console.log(error);
+                    });
+                }, v);
+        })).then(function () {
             msg.graph_func_stack = node.buildFuncStack(msg, {
-                func: 'watson-toneanalyzer-2018-09-21',
+                func: 'watson-nlp-2018-09-21',
                 params: {
                     filterFn: node.filterFn.toString(),
                     propertySelectFn: node.propertySelectFn.toString(),
@@ -115,8 +113,28 @@ module.exports = function (RED) {
                     concept: RED.util.evaluateNodeProperty(node.config.concept, node.config.concept_type, node, msg),
                     concept_limit: RED.util.evaluateNodeProperty(node.config.concept_limit, node.config.concept_limit_type, node, msg)
                 },
-                result: accData
+                result: analyzed_nodes
             });
+            cleanScope({}, msg.graph);
+            msg.payload = analyzed_nodes;
+            node.status({});
+            node.send(msg);
+        }).catch(function (error) {
+
+            msg.graph_func_stack = node.buildFuncStack(msg, {
+                func: 'watson-nlp-2018-09-21',
+                params: {
+                    filterFn: node.filterFn.toString(),
+                    propertySelectFn: node.propertySelectFn.toString(),
+                    propertyWriteFn: node.propertyWriteFn.toString(),
+                    concept: RED.util.evaluateNodeProperty(node.config.concept, node.config.concept_type, node, msg),
+                    concept_limit: RED.util.evaluateNodeProperty(node.config.concept_limit, node.config.concept_limit_type, node, msg)
+                },
+                result: error
+            });
+            cleanScope({}, msg.graph);
+            msg.payload = analyzed_nodes;
+            node.status({});
             node.send(msg);
         });
     };
