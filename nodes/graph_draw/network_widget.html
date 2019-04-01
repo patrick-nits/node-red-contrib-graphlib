@@ -16,15 +16,17 @@
             }, {});
             var is_options_set = false;
             var is_callback_set = false;
-            var container = $('#'+scope.containerId);
+            var container = $('#' + scope.containerId);
             scope.$watch('msg', function (msg) { //watch for an incoming NR msg
                 if (msg) {
                     if (!is_options_set && msg.payload.options) {
                         network.setOptions(msg.payload.options);
-                        is_options_set = true;
+                        if (!msg.payload.widgetOpts.override_options) {
+                            is_options_set = true;
+                        }
                     }
                     if (!is_callback_set && msg.payload.callback) {
-                        new Function('graph','container','scope', msg.payload.callback)(network,container,scope);
+                        new Function('graph', 'container', 'scope', msg.payload.callback)(network, container, scope);
                         is_callback_set = true;
                     }
                     if (msg.payload.data && msg.payload.data.nodes) {

@@ -8,6 +8,7 @@
             group: {type: 'ui_group', required: true},
             name: {value: 'Draw Graph'},
             order: {value: 0},
+            override_options: {value: false},
             width: {
                 value: 12,
                 validate: function (v) {
@@ -59,6 +60,11 @@
  <div class="form-row">
         <label for="node-input-draw_config"><i class="fa fa-cogs"></i> Draw Config</label>
          <input type="text" id="node-input-draw_config">
+    </div>
+    <div class="form-row">
+        <label for="node-input-override_options">&nbsp;</label>
+        <input type="checkbox" id="node-input-override_options" style="display:inline-block; width:15px; vertical-align:baseline;">
+        <span><i class="fa fa-code"></i> Override Options?</span>
     </div>
 </div>
     <div class="form-row">

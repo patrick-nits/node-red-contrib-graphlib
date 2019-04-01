@@ -59,7 +59,8 @@ module.exports = function (RED) {
                     return {id: label.id, from: e.v, to: e.w, label: label.label}
                 })
             },
-            callback: node.draw_config.graphCallbackFns
+            callback: node.draw_config.graphCallbackFns,
+            widgetOpts: {override_options: node.config.override_options}
         };
         return msg;
     };
