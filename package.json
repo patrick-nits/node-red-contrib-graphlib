@@ -16,7 +16,7 @@
     "nodes": {
       "graph_create": "nodes/graph_create/create.js",
       "graph_func": "nodes/graph_func/func.js",
-      "graph_draw": "nodes/graph_draw/graph_draw.js",
+      "ui_graph_draw": "nodes/ui_graph_draw/ui_graph_draw.js",
       "watson_nlp": "nodes/watson_nlp/watson_nlp.js",
       "watson_toneanalyzer": "nodes/watson_toneanalyzer/watson_toneanalyzer.js",
       "watson_translator": "nodes/watson_translator/watson_translator.js"

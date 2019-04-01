@@ -114,5 +114,5 @@ module.exports = function (RED) {
     }
 
     // register ui_list node
-    RED.nodes.registerType('graphlib_render', NetworkNode);
+    RED.nodes.registerType('ui_graph_draw', NetworkNode);
 };
