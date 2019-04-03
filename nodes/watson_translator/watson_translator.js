@@ -133,10 +133,10 @@ module.exports = function (RED) {
                     return Promise.resolve()
                 }
             })).then(function () {
-                analyzed_nodes.push(msg.graph.setNodeObj(v));
+                analyzed_nodes.push(msg.graph.nodeObj(v.v));
             }).catch(function (error) {
                 console.log(error);
-                analyzed_nodes.push(msg.graph.setNodeObj(v));
+                analyzed_nodes.push(msg.graph.nodeObj(v.v));
             });
         })).then(function (data) {
             msg.graph_func_stack = node.buildFuncStack(msg, {
